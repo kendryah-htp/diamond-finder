@@ -749,30 +749,38 @@ async function loadInviteLog() {
 }
 
 
+function showLogin() {
+  localStorage.removeItem('df_session');
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
 window.addEventListener('load', function() {
+  // Safety timeout - never endless load
+  var safetyTimer = setTimeout(showLogin, 4000);
+
   var session = localStorage.getItem('df_session');
-  if (session) {
-    currentEmail = session;
-    loadFromDB(session).then(function(row) {
-      if (row) {
-        settings = Object.assign({}, DEFAULT, row.settings, {updatedAt: row.updated_at, updatedBy: row.updated_by});
-        backup = row.backup;
-        showDashboard();
-      } else {
-        // Session email not in DB - force re-login
-        localStorage.removeItem('df_session');
-        document.getElementById('loading-screen').style.display = 'none';
-        document.getElementById('login-screen').style.display = 'flex';
-      }
-    }).catch(function(e) {
-      console.warn('Load error:', e);
-      document.getElementById('loading-screen').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'flex';
-    });
-  } else {
-    document.getElementById('loading-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'flex';
+  if (!session) {
+    clearTimeout(safetyTimer);
+    showLogin();
+    return;
   }
+
+  currentEmail = session;
+  loadFromDB(session).then(function(row) {
+    clearTimeout(safetyTimer);
+    if (row && row.settings) {
+      settings = Object.assign({}, DEFAULT, row.settings, {updatedAt: row.updated_at, updatedBy: row.updated_by});
+      backup = row.backup;
+      showDashboard();
+    } else {
+      showLogin();
+    }
+  }).catch(function(e) {
+    clearTimeout(safetyTimer);
+    console.warn('Session restore failed:', e);
+    showLogin();
+  });
 });
 </script>
 </body>
