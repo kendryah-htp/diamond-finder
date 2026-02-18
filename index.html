@@ -224,11 +224,11 @@ footer a:hover{color:var(--gold)}
         <button class="vault-cta-btn" id="vault-cta-btn" onclick="handleVaultCTA()">Claim Your Exclusive Gift</button>
         <hr class="vault-divider"/>
         <div class="vault-offer" id="vault-offer">
-          <div class="vault-offer-badge">&#x1F525; Limited Time Offer</div>
-          <div class="vault-offer-text" id="vault-offer-text">Love your vault? <strong>Save 20% forever</strong> &#8212; enter your email and we'll send your exclusive discount code instantly.</div>
+          <div class="vault-offer-badge">&#x1F48E; Exclusive Access</div>
+          <div class="vault-offer-text" id="vault-offer-text">Love your vault? <strong>Unlock your exclusive discount</strong> &#8212; enter your email and we'll send your code instantly.</div>
           <div class="vault-email-row">
             <input type="email" class="vault-email-input" id="vault-email" placeholder="your@email.com"/>
-            <button class="vault-email-btn" id="vault-submit-btn" onclick="submitVaultEmail()">Get 20% Off</button>
+            <button class="vault-email-btn" id="vault-submit-btn" onclick="submitVaultEmail()">Send My Code</button>
           </div>
           <div id="vault-email-error" style="color:#e05252;font-size:12px;margin-top:8px;display:none"></div>
         </div>
@@ -236,7 +236,7 @@ footer a:hover{color:var(--gold)}
       <div class="vault-success" id="vault-success">
         <div class="vault-success-icon">&#x1F389;</div>
         <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;margin-bottom:8px" id="success-title">Your Code Is On Its Way!</div>
-        <div style="font-size:13px;color:rgba(200,169,110,0.7);margin-bottom:4px">Check your inbox. Your 20% off code:</div>
+        <div style="font-size:13px;color:rgba(200,169,110,0.7);margin-bottom:4px">Check your inbox. Your exclusive code:</div>
         <div class="vault-code-box" id="success-code">DIAMOND20</div>
         <div style="font-size:12px;color:rgba(200,169,110,0.5);margin-bottom:16px">Applied forever &#8212; every billing cycle.</div>
         <div class="vault-plan-links" id="success-links"></div>
@@ -456,7 +456,7 @@ footer a:hover{color:var(--gold)}
           <li>Admin panel access</li>
           <li>Email support</li>
         </ul>
-        <a class="plan-btn plan-btn-ghost" href="https://buy.stripe.com/5kQaEPeys9GLbGJ9Dg7ok12" target="_blank">Get Started &#x2192;</a>
+        <a class="plan-btn plan-btn-ghost" href="https://buy.stripe.com/5kQaEPeys9GLbGJ9Dg7ok12?prefilled_promo_code=DIAMOND20" target="_blank">Get Started &#x2192;</a>
       </div>
       <div class="plan featured" style="animation-delay:.2s">
         <div class="plan-badge">Most Popular</div>
@@ -472,7 +472,7 @@ footer a:hover{color:var(--gold)}
           <li>Backup &amp; restore</li>
           <li>Priority support</li>
         </ul>
-        <a class="plan-btn plan-btn-gold" href="https://buy.stripe.com/4gMcMXgGA8CHeSVbLo7ok13" target="_blank">Get Pro &#x2192;</a>
+        <a class="plan-btn plan-btn-gold" href="https://buy.stripe.com/4gMcMXgGA8CHeSVbLo7ok13?prefilled_promo_code=DIAMOND20" target="_blank">Get Pro &#x2192;</a>
       </div>
       <div class="plan" style="animation-delay:.3s">
         <div class="plan-name">Agency</div>
@@ -487,7 +487,7 @@ footer a:hover{color:var(--gold)}
           <li>Team member access</li>
           <li>Dedicated support</li>
         </ul>
-        <a class="plan-btn plan-btn-ghost" href="https://buy.stripe.com/3cIdR1gGA9GLeSVeXA7ok14" target="_blank">Get Agency &#x2192;</a>
+        <a class="plan-btn plan-btn-ghost" href="https://buy.stripe.com/3cIdR1gGA9GLeSVeXA7ok14?prefilled_promo_code=DIAMOND20" target="_blank">Get Agency &#x2192;</a>
       </div>
     </div>
   </div>
@@ -644,7 +644,7 @@ function triggerReveal() {
   ctaBtn.textContent   = document.getElementById('c-cta').value || 'Claim Your Gift';
   ctaBtn.style.background = t.accent;
   ctaBtn.style.color   = '#fff';
-  document.getElementById('vault-offer-text').innerHTML = 'Love your vault? <strong>Save 20% forever</strong> &mdash; enter your email and we\'ll send your exclusive discount code instantly.';
+  document.getElementById('vault-offer-text').innerHTML = 'Love your vault? <strong>Unlock your exclusive discount</strong> &mdash; enter your email and we\'ll send your exclusive discount code instantly.';
   var overlay = document.getElementById('vault-overlay');
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -705,7 +705,7 @@ async function submitVaultEmail() {
   errEl.style.display = 'none';
   btn.disabled = true;
   btn.textContent = 'Sending\u2026';
-  var code = 'DIAMOND-' + Math.random().toString(36).substr(2,6).toUpperCase();
+  var code = 'DIAMOND20';
   var vaultConfig = {
     theme: currentTheme,
     icon:  currentIcon,
@@ -735,7 +735,7 @@ async function submitVaultEmail() {
         headers: {'apikey': SUPABASE_ANON, 'Authorization': 'Bearer '+SUPABASE_ANON}
       });
       var existing = await fetchRes.json();
-      if(existing && existing[0]) code = existing[0].discount_code;
+      // Always use universal code
     }
     await fetch(RESEND_PROXY, {
       method: 'POST',
@@ -766,9 +766,9 @@ function showVaultSuccess(code, email) {
   var linksEl = document.getElementById('success-links');
   linksEl.innerHTML = '';
   var plans = [
-    {name:'Starter \u2014 $27/mo', url: STRIPE_LINKS.starter+'?prefilled_promo_code='+code, color:'rgba(200,169,110,0.12)', text:'#c8a96e', border:'rgba(200,169,110,0.3)'},
-    {name:'Pro \u2014 $97 + $27/mo', url: STRIPE_LINKS.pro+'?prefilled_promo_code='+code, color:'linear-gradient(135deg,#c8a96e,#a07840)', text:'#fff', border:'none'},
-    {name:'Agency \u2014 $197 + $47/mo', url: STRIPE_LINKS.agency+'?prefilled_promo_code='+code, color:'rgba(200,169,110,0.12)', text:'#c8a96e', border:'rgba(200,169,110,0.3)'}
+    {name:'Starter \u2014 $27/mo', url: STRIPE_LINKS.starter+'?prefilled_promo_code=DIAMOND20', color:'rgba(200,169,110,0.12)', text:'#c8a96e', border:'rgba(200,169,110,0.3)'},
+    {name:'Pro \u2014 $97 + $27/mo', url: STRIPE_LINKS.pro+'?prefilled_promo_code=DIAMOND20', color:'linear-gradient(135deg,#c8a96e,#a07840)', text:'#fff', border:'none'},
+    {name:'Agency \u2014 $197 + $47/mo', url: STRIPE_LINKS.agency+'?prefilled_promo_code=DIAMOND20', color:'rgba(200,169,110,0.12)', text:'#c8a96e', border:'rgba(200,169,110,0.3)'}
   ];
   plans.forEach(function(plan){
     var a = document.createElement('a');
