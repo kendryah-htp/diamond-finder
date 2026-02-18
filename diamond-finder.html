@@ -61,7 +61,7 @@
     <div style="margin-bottom:16px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <label class="label" style="margin:0">Password</label>
-        <span id="pw-hint" style="display:none;font-size:10px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);border-radius:6px;padding:2px 9px;font-style:italic">💡 HTPleader!!!</span>
+        <span id="pw-hint" style="display:none;font-size:10px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);border-radius:6px;padding:2px 9px;font-style:italic">💡 check your onboarding doc</span>
       </div>
       <input class="input" type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
@@ -98,6 +98,7 @@
       <button class="tab-btn" id="tab-trigger-btn" onclick="switchTab('trigger',this)">⚡ Triggers</button>
       <button class="tab-btn" id="tab-embed-btn" onclick="switchTab('embed',this)">🔗 Embed</button>
       <button class="tab-btn" id="tab-data-btn" onclick="switchTab('data',this)">🗄️ Data</button>
+      <button class="tab-btn" id="tab-demos-btn" onclick="switchTab('demos',this)">📨 Demos</button>
       <div id="sidebar-meta" style="display:none;margin-top:22px;padding:12px;background:rgba(200,169,110,0.05);border-radius:10px;font-size:10px;color:rgba(200,169,110,0.4);line-height:1.7">
         <div style="color:rgba(200,169,110,0.55);margin-bottom:2px">Last saved</div>
         <div id="meta-date"></div>
@@ -220,6 +221,57 @@
             • Stripe webhook auto-provisioning<br/>
             • CDN-hosted loader script with version control<br/>
             • Analytics dashboard with per-domain conversion tracking
+          </div>
+        </div>
+      </div>
+
+      <!-- DEMOS TAB -->
+      <div id="tab-demos" class="tab-panel">
+        <h2 style="color:#c8a96e;margin-bottom:6px;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700">Send Demo Invites</h2>
+        <p style="color:rgba(200,169,110,0.45);font-size:13px;margin-bottom:26px">Invite prospects to experience Diamond Finder™ firsthand — personalized, tracked, and conversion-ready</p>
+
+        <!-- Single invite -->
+        <div class="card" style="margin-bottom:22px">
+          <div style="font-size:13px;font-weight:700;color:#c8a96e;margin-bottom:16px">✉️ Send Individual Invite</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+            <div>
+              <label class="label">Recipient Name</label>
+              <input class="input" id="invite-name" placeholder="First name"/>
+            </div>
+            <div>
+              <label class="label">Recipient Email</label>
+              <input class="input" id="invite-email" type="email" placeholder="their@email.com"/>
+            </div>
+          </div>
+          <div style="margin-bottom:14px">
+            <label class="label">Personal Note (optional)</label>
+            <textarea class="input" id="invite-note" rows="2" placeholder="e.g. Thought you'd love this for your site…" style="resize:vertical"></textarea>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button class="btn-gold" onclick="sendInvite()" id="send-invite-btn" style="width:auto;padding:11px 28px">Send Invite →</button>
+            <span id="invite-status" style="font-size:13px;color:rgba(200,169,110,0.5)"></span>
+          </div>
+        </div>
+
+        <!-- Bulk invite -->
+        <div class="card" style="margin-bottom:22px">
+          <div style="font-size:13px;font-weight:700;color:#c8a96e;margin-bottom:16px">📋 Bulk Invite (CSV)</div>
+          <p style="font-size:12px;color:rgba(200,169,110,0.45);margin-bottom:14px">One email per line, or <code style="background:rgba(200,169,110,0.1);padding:1px 6px;border-radius:4px">Name,Email</code> per line</p>
+          <textarea class="input" id="bulk-emails" rows="5" placeholder="Sarah,sarah@example.com&#10;John,john@example.com&#10;orjust@email.com" style="resize:vertical;font-family:monospace;font-size:13px"></textarea>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:14px">
+            <button class="btn-gold" onclick="sendBulkInvites()" id="bulk-btn" style="width:auto;padding:11px 28px">Send All →</button>
+            <span id="bulk-status" style="font-size:13px;color:rgba(200,169,110,0.5)"></span>
+          </div>
+        </div>
+
+        <!-- Sent log -->
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div style="font-size:13px;font-weight:700;color:#c8a96e">📊 Invite History</div>
+            <button class="btn-ghost" onclick="loadInviteLog()" style="font-size:11px;padding:5px 12px">↺ Refresh</button>
+          </div>
+          <div id="invite-log" style="font-size:13px;color:rgba(200,169,110,0.5)">
+            <div style="text-align:center;padding:20px;opacity:0.5">Loading invite history…</div>
           </div>
         </div>
       </div>
@@ -516,9 +568,159 @@ function switchTab(id, btn) {
   document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
   document.getElementById('tab-' + id).classList.add('active');
   btn.classList.add('active');
+  if (id === 'demos') loadInviteLog();
 }
 
-// ─── INIT ────────────────────────────────────────────────────────
+// ─── DEMOS ────────────────────────────────────────────────────────
+var DEMO_URL  = 'https://kendryah-htp.github.io/diamond-finder/demo.html';
+var RESEND_KEY= 're_AjeZMouE_42a2JX1iAjSjjSuqSWVtbxL6';
+var FROM_EMAIL= 're@elvt.social';
+
+async function sendInvite() {
+  var name  = document.getElementById('invite-name').value.trim();
+  var email = document.getElementById('invite-email').value.trim().toLowerCase();
+  var note  = document.getElementById('invite-note').value.trim();
+  var status= document.getElementById('invite-status');
+  var btn   = document.getElementById('send-invite-btn');
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { status.textContent='⚠ Valid email required'; status.style.color='#e05252'; return; }
+
+  btn.disabled=true; btn.textContent='Sending…'; status.textContent=''; status.style.color='rgba(200,169,110,0.5)';
+
+  try {
+    await sendDemoEmail(name || email.split('@')[0], email, note);
+    await logInvite(name || email.split('@')[0], email);
+    status.textContent='✓ Invite sent!'; status.style.color='#4caf7d';
+    document.getElementById('invite-name').value='';
+    document.getElementById('invite-email').value='';
+    document.getElementById('invite-note').value='';
+    loadInviteLog();
+  } catch(e) {
+    status.textContent='✗ Failed — check email config'; status.style.color='#e05252';
+    console.error(e);
+  }
+  btn.disabled=false; btn.textContent='Send Invite →';
+}
+
+async function sendBulkInvites() {
+  var raw   = document.getElementById('bulk-emails').value.trim();
+  var status= document.getElementById('bulk-status');
+  var btn   = document.getElementById('bulk-btn');
+  if (!raw) { status.textContent='⚠ Enter at least one email'; status.style.color='#e05252'; return; }
+
+  var lines = raw.split('\n').map(function(l){ return l.trim(); }).filter(Boolean);
+  var parsed = lines.map(function(l){
+    var parts = l.split(',');
+    return parts.length>=2
+      ? { name: parts[0].trim(), email: parts[1].trim().toLowerCase() }
+      : { name: l.split('@')[0], email: l.toLowerCase() };
+  }).filter(function(r){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email); });
+
+  if (!parsed.length) { status.textContent='⚠ No valid emails found'; status.style.color='#e05252'; return; }
+
+  btn.disabled=true; status.style.color='rgba(200,169,110,0.6)';
+  var sent=0, failed=0;
+  for (var i=0; i<parsed.length; i++) {
+    status.textContent='Sending ' + (i+1) + '/' + parsed.length + '…';
+    try {
+      await sendDemoEmail(parsed[i].name, parsed[i].email, '');
+      await logInvite(parsed[i].name, parsed[i].email);
+      sent++;
+    } catch(e) { failed++; }
+    await new Promise(function(r){ setTimeout(r, 350); }); // rate limit buffer
+  }
+  status.textContent='✓ ' + sent + ' sent' + (failed?' · ✗ '+failed+' failed':''); status.style.color= failed?'#e0b452':'#4caf7d';
+  document.getElementById('bulk-emails').value='';
+  loadInviteLog();
+  btn.disabled=false;
+}
+
+async function sendDemoEmail(name, email, note) {
+  var firstName = name.split(' ')[0];
+  var html = '\
+<!DOCTYPE html><html><head><meta charset="UTF-8"/></head><body style="margin:0;padding:0;background:#0f0a07;font-family:\'Jost\',Arial,sans-serif">\
+<div style="max-width:520px;margin:0 auto;padding:28px 16px">\
+  <div style="background:linear-gradient(135deg,#1e1208,#2c1a0e);border:1px solid rgba(200,169,110,0.25);border-radius:20px;overflow:hidden">\
+    <div style="padding:32px 36px;text-align:center;border-bottom:1px solid rgba(200,169,110,0.12)">\
+      <div style="font-size:44px;margin-bottom:10px">💎</div>\
+      <div style="color:#c8a96e;font-size:22px;font-weight:700;letter-spacing:2px;font-family:Georgia,serif">Diamond Finder™</div>\
+      <div style="color:rgba(200,169,110,0.45);font-size:11px;margin-top:4px;letter-spacing:2px;text-transform:uppercase">Exclusive Demo Invitation</div>\
+    </div>\
+    <div style="padding:28px 36px">\
+      <p style="color:#f5e6c8;font-size:16px;margin-bottom:6px">Hi <strong style="color:#c8a96e">' + firstName + '</strong>,</p>\
+      <p style="color:rgba(245,230,200,0.75);font-size:14px;line-height:1.8;margin-bottom:18px">' + (note || 'You\'ve been personally invited to explore Diamond Finder™ — the hidden vault that turns your best website visitors into loyal fans.') + '</p>\
+      <p style="color:rgba(245,230,200,0.75);font-size:14px;line-height:1.8;margin-bottom:22px">Inside your private demo you\'ll configure a real vault, set trigger rules, and see exactly what your visitors experience when they discover it.</p>\
+      <div style="text-align:center;margin-bottom:22px">\
+        <a href="' + DEMO_URL + '" style="display:inline-block;background:linear-gradient(135deg,#c8a96e,#a07840);color:#fff;text-decoration:none;padding:14px 32px;border-radius:12px;font-size:15px;font-weight:700;letter-spacing:1px">ENTER YOUR DEMO →</a>\
+      </div>\
+      <div style="background:rgba(200,169,110,0.06);border:1px solid rgba(200,169,110,0.15);border-radius:10px;padding:14px;margin-bottom:18px">\
+        <div style="font-size:11px;color:rgba(200,169,110,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">What\'s inside your demo</div>\
+        <div style="font-size:13px;color:rgba(245,230,200,0.65);line-height:2">💎 &nbsp;Vault configurator with live preview<br/>⚡ &nbsp;Trigger rule builder<br/>🌐 &nbsp;Scroll the live site to find the vault<br/>🔗 &nbsp;Your embed code — ready to install</div>\
+      </div>\
+    </div>\
+    <div style="padding:16px 36px;border-top:1px solid rgba(200,169,110,0.1);text-align:center">\
+      <div style="font-size:11px;color:rgba(200,169,110,0.3)">Diamond Finder™ by <a href="https://highticketpurpose.com" style="color:rgba(200,169,110,0.4);text-decoration:none">ELVT Social</a> · <a href="https://kendryah-htp.github.io/diamond-finder/#pricing" style="color:rgba(200,169,110,0.4);text-decoration:none">View Pricing</a></div>\
+    </div>\
+  </div>\
+</div></body></html>';
+
+  var res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + RESEND_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: 'Diamond Finder™ <' + FROM_EMAIL + '>',
+      to: [email],
+      subject: '💎 ' + firstName + ', your Diamond Finder™ demo is ready',
+      html: html
+    })
+  });
+  if (!res.ok) { var e = await res.text(); throw new Error(e); }
+  return res.json();
+}
+
+async function logInvite(name, email) {
+  await fetch(SB_URL + '/rest/v1/demo_invites', {
+    method: 'POST',
+    headers: {
+      'apikey': SB_ANON,
+      'Authorization': 'Bearer ' + SB_ANON,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=merge-duplicates'
+    },
+    body: JSON.stringify({ name: name, email: email, sent_by: currentEmail, sent_at: new Date().toISOString() })
+  });
+}
+
+async function loadInviteLog() {
+  var log = document.getElementById('invite-log');
+  log.innerHTML = '<div style="text-align:center;padding:12px;opacity:0.5">Loading…</div>';
+  try {
+    var res = await fetch(SB_URL + '/rest/v1/demo_invites?order=sent_at.desc&limit=50&select=*', {
+      headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON }
+    });
+    var rows = await res.json();
+    if (!rows || !rows.length) { log.innerHTML='<div style="text-align:center;padding:20px;opacity:0.4">No invites sent yet</div>'; return; }
+    var html = '<table style="width:100%;border-collapse:collapse">' +
+      '<tr style="font-size:10px;color:rgba(200,169,110,0.4);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid rgba(200,169,110,0.1)">' +
+      '<td style="padding:6px 10px">Name</td><td style="padding:6px 10px">Email</td><td style="padding:6px 10px">Sent By</td><td style="padding:6px 10px">Date</td>' +
+      '</tr>';
+    rows.forEach(function(r,i){
+      var d = new Date(r.sent_at);
+      html += '<tr style="border-bottom:1px solid rgba(200,169,110,0.06);' + (i%2===0?'background:rgba(200,169,110,0.02)':'') + '">' +
+        '<td style="padding:9px 10px;font-size:13px;color:#f5e6c8">' + (r.name||'—') + '</td>' +
+        '<td style="padding:9px 10px;font-size:12px;color:rgba(200,169,110,0.6)">' + r.email + '</td>' +
+        '<td style="padding:9px 10px;font-size:11px;color:rgba(200,169,110,0.4)">' + (r.sent_by||'').split('@')[0] + '</td>' +
+        '<td style="padding:9px 10px;font-size:11px;color:rgba(200,169,110,0.4)">' + d.toLocaleDateString() + ' ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) + '</td>' +
+        '</tr>';
+    });
+    html += '</table>';
+    log.innerHTML = html;
+  } catch(e) {
+    log.innerHTML = '<div style="color:#e05252;font-size:13px;padding:12px">Failed to load invite log</div>';
+  }
+}
+
+
 window.addEventListener('load', function() {
   var session = localStorage.getItem('df_session');
   if (session && SUPER_ADMINS.indexOf(session) > -1) {
