@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Diamond Finder™ — Demo Access</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Jost',sans-serif;background:#0f0a07;color:#f5e6c8;min-height:100vh}
+input,textarea,button{font-family:'Jost',sans-serif}
+.input{width:100%;padding:11px 14px;background:rgba(255,248,235,0.06);border:1px solid rgba(200,169,110,0.25);border-radius:10px;color:#f5e6c8;font-size:14px;outline:none;transition:border 0.2s}
+.input:focus{border-color:rgba(200,169,110,0.6)}
+.label{display:block;font-size:11px;color:rgba(200,169,110,0.6);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.btn-gold{background:linear-gradient(135deg,#c8a96e,#a07840);border:none;color:#fff;border-radius:10px;padding:13px 24px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.5px;transition:opacity 0.2s;width:100%}
+.btn-gold:hover{opacity:.88}
+.btn-ghost{background:rgba(200,169,110,0.1);border:1px solid rgba(200,169,110,0.25);color:#c8a96e;border-radius:9px;padding:10px 22px;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-ghost:hover{background:rgba(200,169,110,0.18)}
+.btn-open{background:linear-gradient(135deg,#4caf7d,#2d7a52);border:none;color:#fff;border-radius:9px;padding:10px 22px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:opacity 0.2s}
+.btn-open:hover{opacity:.88}
+.card{background:rgba(255,248,235,0.04);border:1px solid rgba(200,169,110,0.12);border-radius:14px;padding:22px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadein{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.fadein{animation:fadein 0.4s ease forwards}
+#loading-screen{position:fixed;inset:0;background:#0f0a07;display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:16px}
+#register-screen{display:none;min-height:100vh;background:radial-gradient(ellipse at top,#1e1208 0%,#0f0a07 70%);align-items:center;justify-content:center;padding:32px 16px}
+#demo-dashboard{display:none;min-height:100vh;flex-direction:column}
+.tab-btn{width:100%;text-align:left;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-size:13px;margin-bottom:4px;font-family:'Jost',sans-serif;border-left:2px solid transparent;transition:all 0.2s;background:transparent;color:rgba(200,169,110,0.5)}
+.tab-btn.active{background:rgba(200,169,110,0.14);color:#c8a96e;border-left:2px solid #c8a96e}
+.tab-btn:hover:not(.active){background:rgba(200,169,110,0.07);color:rgba(200,169,110,0.75)}
+.tab-panel{display:none}.tab-panel.active{display:block;animation:fadein 0.3s ease}
+.demo-badge{display:inline-block;background:linear-gradient(135deg,rgba(200,169,110,0.2),rgba(200,169,110,0.1));border:1px solid rgba(200,169,110,0.4);color:#c8a96e;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:20px;font-weight:600}
+.locked-overlay{position:absolute;inset:0;background:rgba(15,10,7,0.75);backdrop-filter:blur(3px);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;z-index:10}
+.stat-card{background:rgba(255,248,235,0.04);border:1px solid rgba(200,169,110,0.12);border-radius:12px;padding:18px 20px;text-align:center}
+.iframe-container{position:relative;width:100%;border-radius:12px;overflow:hidden;border:2px solid rgba(200,169,110,0.2);background:#0a0604}
+iframe{width:100%;display:block;border:none}
+.error-msg{color:#e05252;font-size:13px;text-align:center;margin-bottom:10px;display:none}
+.strength-bar{height:3px;border-radius:2px;margin-top:6px;transition:all 0.3s;background:rgba(255,255,255,0.08)}
+input[type=range]{accent-color:#c8a96e;width:100%}
+input[type=checkbox]{accent-color:#c8a96e;width:16px;height:16px}
+.tooltip{position:relative;cursor:help}
+.tooltip:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1e1208;border:1px solid rgba(200,169,110,0.25);color:#c8a96e;font-size:11px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;z-index:100}
+.upgrade-banner{background:linear-gradient(135deg,rgba(200,169,110,0.12),rgba(200,169,110,0.06));border:1px solid rgba(200,169,110,0.3);border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading-screen">
+  <div style="font-size:48px;animation:float 2s ease-in-out infinite">💎</div>
+  <div style="color:#c8a96e;font-family:'Cormorant Garamond',serif;font-size:18px;letter-spacing:2px">Diamond Finder™</div>
+  <div style="width:32px;height:32px;border:2px solid rgba(200,169,110,0.2);border-top-color:#c8a96e;border-radius:50%;animation:spin 0.8s linear infinite;margin-top:4px"></div>
+  <div style="font-size:12px;color:rgba(200,169,110,0.4);letter-spacing:1px">Loading your experience…</div>
+</div>
+
+<!-- REGISTER / LOGIN -->
+<div id="register-screen" style="display:none">
+  <div style="width:100%;max-width:440px">
+
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:36px;animation:fadein 0.5s ease">
+      <div style="font-size:56px;margin-bottom:14px;animation:float 3s ease-in-out infinite">💎</div>
+      <div style="color:#c8a96e;font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;letter-spacing:2px">Diamond Finder™</div>
+      <div style="color:rgba(200,169,110,0.5);font-size:12px;margin-top:6px;letter-spacing:2px;text-transform:uppercase">Interactive Demo Access</div>
+      <div style="margin-top:14px;display:inline-block;background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.3);border-radius:20px;padding:5px 14px;font-size:12px;color:#4caf7d">
+        ✦ You've been personally invited
+      </div>
+    </div>
+
+    <!-- Toggle: Register / Login -->
+    <div style="display:flex;background:rgba(255,248,235,0.04);border:1px solid rgba(200,169,110,0.15);border-radius:12px;padding:4px;margin-bottom:24px">
+      <button id="toggle-register" onclick="showRegister()" style="flex:1;padding:9px;border:none;border-radius:9px;background:linear-gradient(135deg,#c8a96e,#a07840);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Jost',sans-serif">Create Access</button>
+      <button id="toggle-login" onclick="showLoginForm()" style="flex:1;padding:9px;border:none;border-radius:9px;background:transparent;color:rgba(200,169,110,0.5);font-size:13px;font-weight:600;cursor:pointer;font-family:'Jost',sans-serif">Already Have Access</button>
+    </div>
+
+    <!-- Registration Form -->
+    <div id="reg-form" style="background:rgba(255,248,235,0.04);border:1px solid rgba(200,169,110,0.2);border-radius:18px;padding:36px 32px;backdrop-filter:blur(12px);box-shadow:0 24px 80px rgba(0,0,0,0.5)">
+      <div style="margin-bottom:18px">
+        <label class="label">First Name</label>
+        <input class="input" type="text" id="reg-name" placeholder="Your first name" onkeydown="if(event.key==='Enter')doRegister()"/>
+      </div>
+      <div style="margin-bottom:18px">
+        <label class="label">Email Address</label>
+        <input class="input" type="email" id="reg-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doRegister()"/>
+      </div>
+      <div style="margin-bottom:6px">
+        <label class="label">Create a Password</label>
+        <input class="input" type="password" id="reg-pass" placeholder="Min 8 characters" oninput="checkStrength(this.value)" onkeydown="if(event.key==='Enter')doRegister()"/>
+        <div id="strength-bar" class="strength-bar"></div>
+        <div id="strength-label" style="font-size:11px;color:rgba(200,169,110,0.4);margin-top:4px;height:14px"></div>
+      </div>
+      <div style="margin-bottom:22px">
+        <input class="input" type="password" id="reg-pass2" placeholder="Confirm password" onkeydown="if(event.key==='Enter')doRegister()" style="margin-top:10px"/>
+      </div>
+      <div id="reg-error" class="error-msg"></div>
+      <button class="btn-gold" onclick="doRegister()">ENTER THE VAULT →</button>
+      <div style="margin-top:18px;text-align:center;font-size:11px;color:rgba(200,169,110,0.3)">
+        Your data is encrypted · No spam ever
+      </div>
+    </div>
+
+    <!-- Login Form (hidden by default) -->
+    <div id="login-form" style="display:none;background:rgba(255,248,235,0.04);border:1px solid rgba(200,169,110,0.2);border-radius:18px;padding:36px 32px;backdrop-filter:blur(12px);box-shadow:0 24px 80px rgba(0,0,0,0.5)">
+      <div style="margin-bottom:18px">
+        <label class="label">Email</label>
+        <input class="input" type="email" id="dl-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doDemoLogin()"/>
+      </div>
+      <div style="margin-bottom:22px">
+        <label class="label">Password</label>
+        <input class="input" type="password" id="dl-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doDemoLogin()"/>
+      </div>
+      <div id="dl-error" class="error-msg"></div>
+      <button class="btn-gold" onclick="doDemoLogin()">ACCESS DEMO →</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- DEMO DASHBOARD -->
+<div id="demo-dashboard" style="display:none">
+
+  <!-- NAV -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:15px 28px;border-bottom:1px solid rgba(200,169,110,0.13);background:rgba(10,6,3,0.9);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="font-size:22px">💎</span>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:#c8a96e;letter-spacing:1px;font-family:'Cormorant Garamond',serif">Diamond Finder™</div>
+        <div style="font-size:9px;color:rgba(200,169,110,0.35);letter-spacing:2px;text-transform:uppercase">Demo Portal</div>
+      </div>
+      <div class="demo-badge" style="margin-left:4px">Demo</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <span style="font-size:12px;color:rgba(200,169,110,0.5)" id="demo-nav-name"></span>
+      <button class="btn-ghost" style="padding:7px 14px;font-size:12px" onclick="doDemoLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div style="display:flex;min-height:calc(100vh - 60px)">
+    <!-- SIDEBAR -->
+    <div style="width:176px;flex-shrink:0;padding:20px 14px;border-right:1px solid rgba(200,169,110,0.09)">
+      <button class="tab-btn active" onclick="switchDemoTab('overview',this)">✦ Overview</button>
+      <button class="tab-btn" onclick="switchDemoTab('vault',this)">💎 Vault Config</button>
+      <button class="tab-btn" onclick="switchDemoTab('trigger',this)">⚡ Triggers</button>
+      <button class="tab-btn" onclick="switchDemoTab('preview',this)">🌐 Live Preview</button>
+      <button class="tab-btn" onclick="switchDemoTab('embed',this)">🔗 Embed</button>
+
+      <div style="margin-top:28px;padding:14px;background:linear-gradient(135deg,rgba(200,169,110,0.1),rgba(200,169,110,0.05));border:1px solid rgba(200,169,110,0.2);border-radius:10px">
+        <div style="font-size:10px;color:#c8a96e;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">⭐ Upgrade</div>
+        <div style="font-size:11px;color:rgba(200,169,110,0.55);line-height:1.6;margin-bottom:10px">Unlock real installs, live data & full Supabase sync</div>
+        <a href="https://kendryah-htp.github.io/diamond-finder/#pricing" target="_blank" style="display:block;background:linear-gradient(135deg,#c8a96e,#a07840);color:#fff;border:none;border-radius:8px;padding:8px 10px;font-size:11px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;letter-spacing:.5px">GET STARTED →</a>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div style="flex:1;padding:28px 32px;overflow-y:auto;max-width:900px">
+
+      <!-- OVERVIEW TAB -->
+      <div id="dtab-overview" class="tab-panel active">
+        <div style="margin-bottom:28px">
+          <div style="font-size:13px;color:rgba(200,169,110,0.4);margin-bottom:4px">Welcome back,</div>
+          <h2 style="color:#c8a96e;font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700" id="demo-welcome-name">Explorer</h2>
+          <p style="font-size:13px;color:rgba(200,169,110,0.5);margin-top:6px;max-width:520px">You're exploring the Diamond Finder™ admin experience. All features are live — upgrade to connect your real website.</p>
+        </div>
+
+        <!-- Stats row -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px">
+          <div class="stat-card tooltip" data-tip="Available on paid plans">
+            <div style="font-size:28px;font-weight:700;color:#c8a96e;font-family:'Cormorant Garamond',serif">—</div>
+            <div style="font-size:10px;color:rgba(200,169,110,0.4);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Vault Opens</div>
+            <div style="font-size:10px;color:rgba(200,169,110,0.25);margin-top:2px">Starter+</div>
+          </div>
+          <div class="stat-card tooltip" data-tip="Available on paid plans">
+            <div style="font-size:28px;font-weight:700;color:#c8a96e;font-family:'Cormorant Garamond',serif">—</div>
+            <div style="font-size:10px;color:rgba(200,169,110,0.4);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Leads Captured</div>
+            <div style="font-size:10px;color:rgba(200,169,110,0.25);margin-top:2px">Starter+</div>
+          </div>
+          <div class="stat-card tooltip" data-tip="Available on paid plans">
+            <div style="font-size:28px;font-weight:700;color:#c8a96e;font-family:'Cormorant Garamond',serif">—</div>
+            <div style="font-size:10px;color:rgba(200,169,110,0.4);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Conv. Rate</div>
+            <div style="font-size:10px;color:rgba(200,169,110,0.25);margin-top:2px">Pro+</div>
+          </div>
+          <div class="stat-card tooltip" data-tip="Available on paid plans">
+            <div style="font-size:28px;font-weight:700;color:#c8a96e;font-family:'Cormorant Garamond',serif">—</div>
+            <div style="font-size:10px;color:rgba(200,169,110,0.4);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Avg. Time on Site</div>
+            <div style="font-size:10px;color:rgba(200,169,110,0.25);margin-top:2px">Pro+</div>
+          </div>
+        </div>
+
+        <!-- What you can do cards -->
+        <h3 style="color:#c8a96e;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px">What you can do in this demo</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px">
+          <div class="card" onclick="switchDemoTab('vault',document.querySelectorAll('.tab-btn')[1])" style="cursor:pointer;transition:border 0.2s" onmouseover="this.style.borderColor='rgba(200,169,110,0.4)'" onmouseout="this.style.borderColor='rgba(200,169,110,0.12)'">
+            <div style="font-size:26px;margin-bottom:10px">💎</div>
+            <div style="font-size:13px;font-weight:700;color:#c8a96e;margin-bottom:4px">Configure Your Vault</div>
+            <div style="font-size:12px;color:rgba(200,169,110,0.5);line-height:1.6">Customize title, message, icon, theme & CTA button in real time</div>
+          </div>
+          <div class="card" onclick="switchDemoTab('trigger',document.querySelectorAll('.tab-btn')[2])" style="cursor:pointer;transition:border 0.2s" onmouseover="this.style.borderColor='rgba(200,169,110,0.4)'" onmouseout="this.style.borderColor='rgba(200,169,110,0.12)'">
+            <div style="font-size:26px;margin-bottom:10px">⚡</div>
+            <div style="font-size:13px;font-weight:700;color:#c8a96e;margin-bottom:4px">Set Trigger Rules</div>
+            <div style="font-size:12px;color:rgba(200,169,110,0.5);line-height:1.6">Define when the vault reveals — by time on page & scroll depth</div>
+          </div>
+          <div class="card" onclick="switchDemoTab('preview',document.querySelectorAll('.tab-btn')[3])" style="cursor:pointer;transition:border 0.2s" onmouseover="this.style.borderColor='rgba(200,169,110,0.4)'" onmouseout="this.style.borderColor='rgba(200,169,110,0.12)'">
+            <div style="font-size:26px;margin-bottom:10px">🌐</div>
+            <div style="font-size:13px;font-weight:700;color:#c8a96e;margin-bottom:4px">See the Live Site</div>
+            <div style="font-size:12px;color:rgba(200,169,110,0.5);line-height:1.6">Preview Diamond Finder™ in action — scroll to find the vault</div>
+          </div>
+          <div class="card" onclick="switchDemoTab('embed',document.querySelectorAll('.tab-btn')[4])" style="cursor:pointer;transition:border 0.2s" onmouseover="this.style.borderColor='rgba(200,169,110,0.4)'" onmouseout="this.style.borderColor='rgba(200,169,110,0.12)'">
+            <div style="font-size:26px;margin-bottom:10px">🔗</div>
+            <div style="font-size:13px;font-weight:700;color:#c8a96e;margin-bottom:4px">See the Embed Code</div>
+            <div style="font-size:12px;color:rgba(200,169,110,0.5);line-height:1.6">One snippet. Paste once. Works on any website instantly</div>
+          </div>
+        </div>
+
+        <!-- Upgrade banner -->
+        <div class="upgrade-banner">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#c8a96e;margin-bottom:3px">Ready to go live?</div>
+            <div style="font-size:12px;color:rgba(200,169,110,0.5)">Connect your real site, capture real leads, and watch your vault convert visitors into customers.</div>
+          </div>
+          <a href="https://kendryah-htp.github.io/diamond-finder/#pricing" target="_blank" style="background:linear-gradient(135deg,#c8a96e,#a07840);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap;letter-spacing:.5px">START FROM $27/MO →</a>
+        </div>
+      </div>
+
+      <!-- VAULT CONFIG TAB -->
+      <div id="dtab-vault" class="tab-panel">
+        <h2 style="color:#c8a96e;margin-bottom:6px;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700">Vault Configuration</h2>
+        <p style="color:rgba(200,169,110,0.45);font-size:13px;margin-bottom:26px">Customize how your vault looks and what reward it delivers</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+          <div>
+            <div style="margin-bottom:18px"><label class="label">Vault Title</label><input class="input" id="d-vaultTitle" value="You Found a Diamond!" oninput="renderDemoPreview()"/></div>
+            <div style="margin-bottom:18px"><label class="label">Message</label><textarea class="input" id="d-vaultMessage" rows="3" oninput="renderDemoPreview()" style="resize:vertical">As a thank-you for exploring, here's an exclusive gift just for you.</textarea></div>
+            <div style="margin-bottom:18px"><label class="label">CTA Button Label</label><input class="input" id="d-rewardLabel" value="Claim Your Exclusive Gift" oninput="renderDemoPreview()"/></div>
+            <div style="margin-bottom:18px"><label class="label">Chest Icon / Emoji</label><input class="input" id="d-chestIcon" value="💎" oninput="renderDemoPreview()" style="font-size:22px"/></div>
+            <div style="margin-bottom:18px">
+              <label class="label">Theme</label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button onclick="setDemoTheme('brown-cream',this)" class="demo-theme-btn" style="padding:8px 14px;border-radius:8px;cursor:pointer;border:2px solid #c8a96e;background:rgba(200,169,110,0.15);color:#c8a96e;font-size:12px;font-family:'Jost',sans-serif">Brown & Cream</button>
+                <button onclick="setDemoTheme('dark-gold',this)" class="demo-theme-btn" style="padding:8px 14px;border-radius:8px;cursor:pointer;border:2px solid rgba(200,169,110,0.2);background:transparent;color:rgba(200,169,110,0.5);font-size:12px;font-family:'Jost',sans-serif">Dark & Gold</button>
+                <button onclick="setDemoTheme('light-minimal',this)" class="demo-theme-btn" style="padding:8px 14px;border-radius:8px;cursor:pointer;border:2px solid rgba(200,169,110,0.2);background:transparent;color:rgba(200,169,110,0.5);font-size:12px;font-family:'Jost',sans-serif">Light Minimal</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="label">Live Preview</label>
+            <div id="d-vault-preview" style="border-radius:16px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:14px;min-height:220px;overflow:hidden;background:linear-gradient(135deg,#2c1a0e,#4a2c17)"></div>
+            <div style="margin-top:16px;background:rgba(200,169,110,0.05);border:1px solid rgba(200,169,110,0.12);border-radius:10px;padding:14px;font-size:12px;color:rgba(200,169,110,0.5);line-height:1.7">
+              💡 <strong style="color:rgba(200,169,110,0.7)">Demo mode:</strong> Changes here are visual only. On a paid plan, your settings sync instantly to all live embeds via Supabase — no re-pasting needed.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRIGGER TAB -->
+      <div id="dtab-trigger" class="tab-panel">
+        <h2 style="color:#c8a96e;margin-bottom:6px;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700">Trigger Settings</h2>
+        <p style="color:rgba(200,169,110,0.45);font-size:13px;margin-bottom:26px">Control when the vault reveals to your visitors</p>
+        <div style="max-width:500px">
+          <div style="margin-bottom:28px">
+            <label class="label">Time Delay Before Reveal (seconds)</label>
+            <div style="display:flex;align-items:center;gap:16px">
+              <input type="range" min="0" max="60" value="8" id="d-triggerDelay" oninput="document.getElementById('d-delay-val').textContent=this.value+'s'"/>
+              <span id="d-delay-val" style="min-width:42px;text-align:center;font-size:22px;color:#c8a96e;font-weight:700">8s</span>
+            </div>
+          </div>
+          <div style="margin-bottom:28px">
+            <label class="label">Scroll Depth Trigger (%)</label>
+            <div style="display:flex;align-items:center;gap:16px">
+              <input type="range" min="10" max="100" value="80" id="d-triggerScroll" oninput="document.getElementById('d-scroll-val').textContent=this.value+'%'"/>
+              <span id="d-scroll-val" style="min-width:42px;text-align:center;font-size:22px;color:#c8a96e;font-weight:700">80%</span>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:22px">
+            <div style="font-size:12px;color:#c8a96e;font-weight:600;margin-bottom:8px">📍 Current Trigger Logic</div>
+            <div style="font-size:13px;color:rgba(200,169,110,0.6);line-height:1.9">
+              Show vault after <strong style="color:#c8a96e" id="d-trig-delay">8 seconds</strong> on page<br/>
+              AND visitor has scrolled <strong style="color:#c8a96e" id="d-trig-scroll">80%</strong> down<br/>
+              <span style="font-size:11px;opacity:0.6">(Both conditions must be met)</span>
+            </div>
+          </div>
+          <div style="background:rgba(200,169,110,0.05);border:1px solid rgba(200,169,110,0.12);border-radius:10px;padding:14px;font-size:12px;color:rgba(200,169,110,0.5);line-height:1.7">
+            💡 <strong style="color:rgba(200,169,110,0.7)">Pro tip:</strong> Lower scroll depth = more visitors see the vault. Higher time delay = only the most engaged visitors find it. Test both for your audience.
+          </div>
+        </div>
+        <div style="margin-top:18px">
+          <input type="range" id="d-triggerDelaySync" style="display:none" oninput="document.getElementById('d-trig-delay').textContent=this.value+' seconds'"/>
+        </div>
+      </div>
+
+      <!-- LIVE PREVIEW TAB -->
+      <div id="dtab-preview" class="tab-panel">
+        <h2 style="color:#c8a96e;margin-bottom:6px;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700">Live Site Preview</h2>
+        <p style="color:rgba(200,169,110,0.45);font-size:13px;margin-bottom:20px">Scroll down inside the preview to discover the vault — just like your visitors would</p>
+
+        <!-- Buttons row -->
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <button class="btn-ghost" onclick="reloadPreview()" style="font-size:12px;padding:8px 16px">
+            <span>↺</span> Reload Preview
+          </button>
+          <a id="open-site-btn" href="https://kendryah-htp.github.io/diamond-finder/" target="_blank" class="btn-open" style="text-decoration:none;font-size:12px;padding:8px 16px">
+            <span>↗</span> Open in New Tab
+          </a>
+        </div>
+
+        <!-- iFrame scroll-only preview -->
+        <div class="iframe-container">
+          <div style="background:rgba(10,6,3,0.9);padding:10px 16px;border-bottom:1px solid rgba(200,169,110,0.15);display:flex;align-items:center;gap:8px">
+            <div style="display:flex;gap:5px">
+              <div style="width:10px;height:10px;border-radius:50%;background:rgba(200,169,110,0.2)"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:rgba(200,169,110,0.2)"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:rgba(200,169,110,0.2)"></div>
+            </div>
+            <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:6px;padding:4px 12px;font-size:11px;color:rgba(200,169,110,0.4);font-family:monospace">kendryah-htp.github.io/diamond-finder</div>
+            <div style="font-size:10px;color:rgba(200,169,110,0.3);letter-spacing:1px">SCROLL TO EXPLORE</div>
+          </div>
+          <iframe
+            id="site-preview-iframe"
+            src="https://kendryah-htp.github.io/diamond-finder/"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+            scrolling="yes"
+            style="height:620px;pointer-events:auto"
+            title="Diamond Finder™ Live Site">
+          </iframe>
+        </div>
+
+        <div style="margin-top:14px;display:flex;align-items:center;gap:10px;background:rgba(76,175,125,0.07);border:1px solid rgba(76,175,125,0.18);border-radius:10px;padding:12px 16px">
+          <span style="font-size:18px">💡</span>
+          <div style="font-size:12px;color:rgba(76,175,125,0.75);line-height:1.6">Scroll down in the preview above to trigger the vault experience. The vault appears after 8 seconds + 80% scroll depth — just like it would on a real site.</div>
+        </div>
+      </div>
+
+      <!-- EMBED TAB -->
+      <div id="dtab-embed" class="tab-panel">
+        <h2 style="color:#c8a96e;margin-bottom:6px;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700">Embed Code</h2>
+        <p style="color:rgba(200,169,110,0.45);font-size:13px;margin-bottom:26px">One snippet. Paste before <code style="background:rgba(200,169,110,0.1);padding:1px 6px;border-radius:4px;font-size:12px">&lt;/body&gt;</code> on any website</p>
+
+        <div style="position:relative;margin-bottom:18px">
+          <pre id="d-embed-code" style="background:rgba(0,0,0,0.5);border-radius:12px;padding:22px;border:1px solid rgba(200,169,110,0.18);color:#c8a96e;font-size:12px;line-height:1.8;font-family:monospace;overflow-x:auto"><!-- Diamond Finder™ Embed -->
+&lt;script&gt;
+  (function(){
+    var df = document.createElement('script');
+    df.src = 'https://kendryah-htp.github.io/diamond-finder/loader.js';
+    df.dataset.admin  = 'demo@diamondfinder.io';
+    df.dataset.delay  = '8';
+    df.dataset.scroll = '80';
+    df.async = true;
+    document.head.appendChild(df);
+  })();
+&lt;/script&gt;</pre>
+          <button class="btn-ghost" id="copy-embed-btn" onclick="copyDemoEmbed()" style="position:absolute;top:12px;right:12px;font-size:11px;padding:5px 12px">Copy</button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:22px">
+          <div class="card" style="text-align:center">
+            <div style="font-size:24px;margin-bottom:8px">⚡</div>
+            <div style="font-size:12px;font-weight:700;color:#c8a96e;margin-bottom:4px">60-Second Setup</div>
+            <div style="font-size:11px;color:rgba(200,169,110,0.45)">Paste once, works everywhere</div>
+          </div>
+          <div class="card" style="text-align:center">
+            <div style="font-size:24px;margin-bottom:8px">🔄</div>
+            <div style="font-size:12px;font-weight:700;color:#c8a96e;margin-bottom:4px">Real-Time Sync</div>
+            <div style="font-size:11px;color:rgba(200,169,110,0.45)">Change settings, updates instantly</div>
+          </div>
+          <div class="card" style="text-align:center">
+            <div style="font-size:24px;margin-bottom:8px">🌐</div>
+            <div style="font-size:12px;font-weight:700;color:#c8a96e;margin-bottom:4px">Any Platform</div>
+            <div style="font-size:11px;color:rgba(200,169,110,0.45)">WordPress, Shopify, Squarespace…</div>
+          </div>
+        </div>
+
+        <div class="upgrade-banner">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#c8a96e;margin-bottom:3px">Ready to install on your real site?</div>
+            <div style="font-size:12px;color:rgba(200,169,110,0.5)">Upgrade to get your personal embed code with Supabase sync and real lead capture.</div>
+          </div>
+          <a href="https://kendryah-htp.github.io/diamond-finder/#pricing" target="_blank" style="background:linear-gradient(135deg,#c8a96e,#a07840);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap">GET MY CODE →</a>
+        </div>
+      </div>
+
+    </div><!-- end content -->
+  </div><!-- end flex -->
+</div><!-- end demo dashboard -->
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────
+var SB_URL  = 'https://jajtyudbkyrqklbnaggm.supabase.co';
+var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphanR5dWRia3lycWtsYm5hZ2dtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMTU5MzksImV4cCI6MjA4NjU5MTkzOX0.CIXkT6tBbjB5L-1FYECN9UzPLNJTg33hSImB7OONkgs';
+var RESEND_FN = SB_URL + '/functions/v1/send-discount-email';
+var LANDING   = 'https://kendryah-htp.github.io/diamond-finder/';
+
+var THEMES = {
+  'brown-cream':  { bg:'linear-gradient(135deg,#2c1a0e,#4a2c17)', card:'rgba(255,248,235,0.97)', accent:'#c8a96e', text:'#2c1a0e' },
+  'dark-gold':    { bg:'linear-gradient(135deg,#0a0a0a,#1a1a2e)', card:'rgba(20,20,30,0.97)',    accent:'#ffd700', text:'#f0e6c8' },
+  'light-minimal':{ bg:'linear-gradient(135deg,#f8f6f2,#ede9e3)', card:'rgba(255,255,255,0.98)', accent:'#8b6f4e', text:'#2c2318' }
+};
+var demoTheme = 'brown-cream';
+
+// ─── SECURITY HELPERS ────────────────────────────────────────────
+// Simple hash for demo password storage (not cryptographic — server-side hashing would need an edge fn)
+async function hashPass(pass) {
+  var enc = new TextEncoder().encode('df_salt_2026_' + pass);
+  var buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+}
+
+function sanitize(str) {
+  return String(str).replace(/[<>"'&]/g, function(c){
+    return {'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c];
+  });
+}
+
+function validateEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+// Rate limiting: max 5 attempts per 10 min
+var attempts = JSON.parse(sessionStorage.getItem('df_attempts') || '{"count":0,"reset":0}');
+function checkRateLimit() {
+  var now = Date.now();
+  if (now > attempts.reset) { attempts = {count:0, reset: now + 600000}; }
+  attempts.count++;
+  sessionStorage.setItem('df_attempts', JSON.stringify(attempts));
+  return attempts.count <= 5;
+}
+
+// ─── SUPABASE DEMO USERS ─────────────────────────────────────────
+async function getDemoUser(email) {
+  var res = await fetch(SB_URL + '/rest/v1/demo_users?email=eq.' + encodeURIComponent(email) + '&select=*', {
+    headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON }
+  });
+  var data = await res.json();
+  return data && data.length > 0 ? data[0] : null;
+}
+
+async function createDemoUser(name, email, passHash) {
+  var res = await fetch(SB_URL + '/rest/v1/demo_users', {
+    method: 'POST',
+    headers: {
+      'apikey': SB_ANON,
+      'Authorization': 'Bearer ' + SB_ANON,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=merge-duplicates,return=representation'
+    },
+    body: JSON.stringify({ name: name, email: email, pass_hash: passHash, created_at: new Date().toISOString() })
+  });
+  if (!res.ok) { var e = await res.text(); throw new Error(e); }
+  return res.json();
+}
+
+// ─── PASSWORD STRENGTH ───────────────────────────────────────────
+function checkStrength(val) {
+  var bar = document.getElementById('strength-bar');
+  var lbl = document.getElementById('strength-label');
+  if (!val) { bar.style.width='0'; lbl.textContent=''; return; }
+  var score = 0;
+  if (val.length >= 8)  score++;
+  if (val.length >= 12) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^a-zA-Z0-9]/.test(val)) score++;
+  var levels = [
+    {w:'20%', c:'#e05252', t:'Too short'},
+    {w:'40%', c:'#e07a52', t:'Weak'},
+    {w:'60%', c:'#e0b452', t:'Fair'},
+    {w:'80%', c:'#a0c050', t:'Good'},
+    {w:'100%',c:'#4caf7d', t:'Strong'}
+  ];
+  var l = levels[Math.min(score, levels.length-1)];
+  bar.style.width = l.w; bar.style.background = l.c; lbl.textContent = l.t; lbl.style.color = l.c;
+}
+
+// ─── REGISTER ────────────────────────────────────────────────────
+async function doRegister() {
+  if (!checkRateLimit()) { showRegErr('Too many attempts. Please wait 10 minutes.'); return; }
+  var name  = sanitize(document.getElementById('reg-name').value.trim());
+  var email = document.getElementById('reg-email').value.trim().toLowerCase();
+  var pass  = document.getElementById('reg-pass').value;
+  var pass2 = document.getElementById('reg-pass2').value;
+
+  if (!name || name.length < 2)         { showRegErr('Please enter your name.'); return; }
+  if (!validateEmail(email))             { showRegErr('Please enter a valid email.'); return; }
+  if (pass.length < 8)                   { showRegErr('Password must be at least 8 characters.'); return; }
+  if (pass !== pass2)                    { showRegErr('Passwords do not match.'); return; }
+
+  var btn = document.querySelector('#reg-form .btn-gold');
+  btn.textContent = 'Creating access…'; btn.disabled = true;
+
+  try {
+    var existing = await getDemoUser(email);
+    if (existing) { showRegErr('An account with this email already exists. Use "Already Have Access".'); btn.textContent='ENTER THE VAULT →'; btn.disabled=false; return; }
+    var hash = await hashPass(pass);
+    await createDemoUser(name, email, hash);
+    sessionStorage.setItem('df_demo_session', JSON.stringify({name: name, email: email}));
+    showDemoDashboard(name, email);
+  } catch(e) {
+    showRegErr('Something went wrong. Please try again.');
+    btn.textContent='ENTER THE VAULT →'; btn.disabled=false;
+  }
+}
+
+// ─── DEMO LOGIN ──────────────────────────────────────────────────
+async function doDemoLogin() {
+  if (!checkRateLimit()) { showDlErr('Too many attempts. Please wait 10 minutes.'); return; }
+  var email = document.getElementById('dl-email').value.trim().toLowerCase();
+  var pass  = document.getElementById('dl-pass').value;
+  if (!validateEmail(email)) { showDlErr('Please enter a valid email.'); return; }
+  if (!pass) { showDlErr('Please enter your password.'); return; }
+
+  var btn = document.querySelector('#login-form .btn-gold');
+  btn.textContent = 'Checking…'; btn.disabled = true;
+
+  try {
+    var user = await getDemoUser(email);
+    if (!user) { showDlErr('No account found. Please create access first.'); btn.textContent='ACCESS DEMO →'; btn.disabled=false; return; }
+    var hash = await hashPass(pass);
+    if (user.pass_hash !== hash) { showDlErr('Incorrect password. Please try again.'); btn.textContent='ACCESS DEMO →'; btn.disabled=false; return; }
+    sessionStorage.setItem('df_demo_session', JSON.stringify({name: user.name, email: email}));
+    showDemoDashboard(user.name, email);
+  } catch(e) {
+    showDlErr('Something went wrong. Please try again.');
+    btn.textContent='ACCESS DEMO →'; btn.disabled=false;
+  }
+}
+
+function showRegErr(msg) { var e=document.getElementById('reg-error'); e.textContent=msg; e.style.display='block'; }
+function showDlErr(msg)  { var e=document.getElementById('dl-error');  e.textContent=msg; e.style.display='block'; }
+
+// ─── LOGOUT ──────────────────────────────────────────────────────
+function doDemoLogout() {
+  sessionStorage.removeItem('df_demo_session');
+  document.getElementById('demo-dashboard').style.display = 'none';
+  document.getElementById('register-screen').style.display = 'flex';
+}
+
+// ─── SHOW DASHBOARD ──────────────────────────────────────────────
+function showDemoDashboard(name, email) {
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('register-screen').style.display = 'none';
+  var dash = document.getElementById('demo-dashboard');
+  dash.style.display = 'flex';
+  var first = name.split(' ')[0];
+  document.getElementById('demo-nav-name').textContent = first;
+  document.getElementById('demo-welcome-name').textContent = first + ' 👋';
+  renderDemoPreview();
+}
+
+// ─── TOGGLE REGISTER/LOGIN ───────────────────────────────────────
+function showRegister() {
+  document.getElementById('reg-form').style.display   = 'block';
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('toggle-register').style.background = 'linear-gradient(135deg,#c8a96e,#a07840)';
+  document.getElementById('toggle-register').style.color      = '#fff';
+  document.getElementById('toggle-login').style.background    = 'transparent';
+  document.getElementById('toggle-login').style.color         = 'rgba(200,169,110,0.5)';
+}
+function showLoginForm() {
+  document.getElementById('reg-form').style.display   = 'none';
+  document.getElementById('login-form').style.display = 'block';
+  document.getElementById('toggle-login').style.background    = 'linear-gradient(135deg,#c8a96e,#a07840)';
+  document.getElementById('toggle-login').style.color         = '#fff';
+  document.getElementById('toggle-register').style.background = 'transparent';
+  document.getElementById('toggle-register').style.color      = 'rgba(200,169,110,0.5)';
+}
+
+// ─── DEMO TABS ───────────────────────────────────────────────────
+function switchDemoTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('dtab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// ─── VAULT PREVIEW ───────────────────────────────────────────────
+function renderDemoPreview() {
+  var title   = document.getElementById('d-vaultTitle').value;
+  var msg     = document.getElementById('d-vaultMessage').value;
+  var label   = document.getElementById('d-rewardLabel').value;
+  var icon    = document.getElementById('d-chestIcon').value;
+  var t       = THEMES[demoTheme] || THEMES['brown-cream'];
+  var p       = document.getElementById('d-vault-preview');
+  p.style.background = t.bg;
+  p.innerHTML = '<div style="font-size:48px">' + sanitize(icon) + '</div>' +
+    '<div style="background:' + t.card + ';border-radius:12px;padding:20px 26px;text-align:center;max-width:280px;box-shadow:0 8px 32px rgba(0,0,0,0.28)">' +
+    '<div style="font-family:\'Cormorant Garamond\',serif;font-size:18px;font-weight:700;color:' + t.text + ';margin-bottom:8px">' + sanitize(title) + '</div>' +
+    '<div style="font-size:12px;color:' + t.text + ';opacity:0.7;margin-bottom:14px">' + sanitize(msg) + '</div>' +
+    '<button style="background:' + t.accent + ';color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:12px;font-weight:600;cursor:pointer">' + sanitize(label) + '</button>' +
+    '</div>';
+}
+
+function setDemoTheme(theme, btn) {
+  demoTheme = theme;
+  document.querySelectorAll('.demo-theme-btn').forEach(function(b){
+    b.style.border='2px solid rgba(200,169,110,0.2)'; b.style.background='transparent'; b.style.color='rgba(200,169,110,0.5)';
+  });
+  btn.style.border='2px solid #c8a96e'; btn.style.background='rgba(200,169,110,0.15)'; btn.style.color='#c8a96e';
+  renderDemoPreview();
+}
+
+// Sync trigger sliders to display
+document.getElementById('d-triggerDelay').addEventListener('input', function(){
+  document.getElementById('d-trig-delay').textContent = this.value + ' seconds';
+});
+document.getElementById('d-triggerScroll').addEventListener('input', function(){
+  document.getElementById('d-trig-scroll').textContent = this.value + '%';
+});
+
+// ─── IFRAME RELOAD ───────────────────────────────────────────────
+function reloadPreview() {
+  var f = document.getElementById('site-preview-iframe');
+  f.src = f.src;
+}
+
+// ─── COPY EMBED ──────────────────────────────────────────────────
+function copyDemoEmbed() {
+  var code = document.getElementById('d-embed-code').textContent;
+  navigator.clipboard.writeText(code);
+  var btn = document.getElementById('copy-embed-btn');
+  btn.textContent = '✓ Copied!';
+  setTimeout(function(){ btn.textContent = 'Copy'; }, 2000);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────
+window.addEventListener('load', function() {
+  var session = sessionStorage.getItem('df_demo_session');
+  if (session) {
+    try {
+      var s = JSON.parse(session);
+      if (s.name && s.email) { showDemoDashboard(s.name, s.email); return; }
+    } catch(e) {}
+  }
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('register-screen').style.display = 'flex';
+});
+</script>
+</body>
+</html>
