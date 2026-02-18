@@ -353,13 +353,39 @@ async function loadFromDB(email) {
 }
 
 async function saveToDB(email, s, bk) {
-  await sbFetch('POST', {
+  const payload = {
     admin_email: email,
     settings: s,
     backup: bk,
     updated_at: new Date().toISOString(),
     updated_by: email
+  };
+  // Try PATCH first (update existing row)
+  const patch = await fetch(SUPABASE_URL + '/rest/v1/diamond_settings?admin_email=eq.' + encodeURIComponent(email), {
+    method: 'PATCH',
+    headers: {
+      'apikey': SUPABASE_ANON,
+      'Authorization': 'Bearer ' + SUPABASE_ANON,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    },
+    body: JSON.stringify(payload)
   });
+  const patched = await (patch.status === 204 ? Promise.resolve([]) : patch.json());
+  // If no row existed, INSERT
+  if (!patched || patched.length === 0) {
+    const post = await fetch(SUPABASE_URL + '/rest/v1/diamond_settings', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!post.ok) { const e = await post.text(); throw new Error(e); }
+  }
 }
 
 // ─── AUTH ─────────────────────────────────────────────────────────
