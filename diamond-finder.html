@@ -336,7 +336,7 @@ async function sbFetch(method, body) {
       'apikey': SUPABASE_ANON,
       'Authorization': 'Bearer ' + SUPABASE_ANON,
       'Content-Type': 'application/json',
-      'Prefer': method === 'POST' ? 'resolution=merge-duplicates,return=representation' : 'return=representation'
+      'Prefer': 'resolution=merge-duplicates,return=representation'
     },
     body: body ? JSON.stringify(body) : undefined
   });
