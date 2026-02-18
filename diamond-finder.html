@@ -38,11 +38,15 @@
 </style>
 </head>
 <body>
+
+<!-- LOADING -->
 <div id="loading-screen">
   <div style="font-size:48px">💎</div>
   <div style="color:#c8a96e;font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;letter-spacing:2px">Loading Diamond Finder™</div>
   <div style="width:32px;height:32px;border:2px solid rgba(200,169,110,0.2);border-top-color:#c8a96e;border-radius:50%;animation:spin 0.8s linear infinite;margin-top:8px"></div>
 </div>
+
+<!-- LOGIN -->
 <div id="login-screen" style="display:none">
   <div style="background:rgba(255,248,235,0.04);border:1px solid rgba(200,169,110,0.28);border-radius:20px;padding:48px 40px;width:380px;max-width:94vw;backdrop-filter:blur(12px);box-shadow:0 24px 80px rgba(0,0,0,0.6)">
     <div style="text-align:center;margin-bottom:32px">
@@ -57,7 +61,7 @@
     <div style="margin-bottom:16px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <label class="label" style="margin:0">Password</label>
-        <span id="pw-hint" style="display:none;font-size:10px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);border-radius:6px;padding:2px 9px;font-style:italic">💡 new htp admin email pw</span>
+        <span id="pw-hint" style="display:none;font-size:10px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);border-radius:6px;padding:2px 9px;font-style:italic">💡 HTPleader!!!</span>
       </div>
       <input class="input" type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
@@ -68,7 +72,10 @@
     </div>
   </div>
 </div>
+
+<!-- DASHBOARD -->
 <div id="dashboard" style="display:none">
+  <!-- NAV -->
   <div style="display:flex;align-items:center;justify-content:space-between;padding:15px 28px;border-bottom:1px solid rgba(200,169,110,0.13);background:rgba(10,6,3,0.85);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100">
     <div style="display:flex;align-items:center;gap:12px">
       <span style="font-size:22px">💎</span>
@@ -83,19 +90,25 @@
       <button class="btn-ghost" onclick="doLogout()">Logout</button>
     </div>
   </div>
+
   <div style="display:flex;min-height:calc(100vh - 60px)">
+    <!-- SIDEBAR -->
     <div style="width:176px;flex-shrink:0;padding:20px 14px;border-right:1px solid rgba(200,169,110,0.09)">
-      <button class="tab-btn active" onclick="switchTab('vault',this)">💎 Vault</button>
-      <button class="tab-btn" onclick="switchTab('trigger',this)">⚡ Triggers</button>
-      <button class="tab-btn" onclick="switchTab('embed',this)">🔗 Embed</button>
-      <button class="tab-btn" onclick="switchTab('data',this)">🗄️ Data</button>
+      <button class="tab-btn active" id="tab-vault-btn" onclick="switchTab('vault',this)">💎 Vault</button>
+      <button class="tab-btn" id="tab-trigger-btn" onclick="switchTab('trigger',this)">⚡ Triggers</button>
+      <button class="tab-btn" id="tab-embed-btn" onclick="switchTab('embed',this)">🔗 Embed</button>
+      <button class="tab-btn" id="tab-data-btn" onclick="switchTab('data',this)">🗄️ Data</button>
       <div id="sidebar-meta" style="display:none;margin-top:22px;padding:12px;background:rgba(200,169,110,0.05);border-radius:10px;font-size:10px;color:rgba(200,169,110,0.4);line-height:1.7">
         <div style="color:rgba(200,169,110,0.55);margin-bottom:2px">Last saved</div>
         <div id="meta-date"></div>
         <div id="meta-by"></div>
       </div>
     </div>
+
+    <!-- CONTENT -->
     <div style="flex:1;padding:28px 32px;max-width:880px;overflow-y:auto">
+
+      <!-- VAULT TAB -->
       <div id="tab-vault" class="tab-panel active">
         <h2 style="color:#c8a96e;margin-bottom:22px;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700">Vault Configuration</h2>
         <div class="grid2">
@@ -137,6 +150,8 @@
           </div>
         </div>
       </div>
+
+      <!-- TRIGGER TAB -->
       <div id="tab-trigger" class="tab-panel">
         <h2 style="color:#c8a96e;margin-bottom:6px;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700">Trigger Settings</h2>
         <p style="color:rgba(200,169,110,0.45);font-size:13px;margin-bottom:26px">Control when the vault appears to visitors</p>
@@ -144,7 +159,7 @@
           <div style="margin-bottom:28px">
             <label class="label">Time Delay Before Reveal (seconds)</label>
             <div style="display:flex;align-items:center;gap:16px">
-              <input type="range" min="0" max="60" id="f-triggerDelay" oninput="document.getElementById('delay-val').textContent=this.value;liveUpdate()"/>
+              <input type="range" min="0" max="60" id="f-triggerDelay" oninput="document.getElementById('delay-val').textContent=this.value+'s';liveUpdate()"/>
               <span id="delay-val" style="min-width:42px;text-align:center;font-size:20px;color:#c8a96e;font-weight:700">8s</span>
             </div>
           </div>
@@ -165,6 +180,8 @@
           </div>
         </div>
       </div>
+
+      <!-- EMBED TAB -->
       <div id="tab-embed" class="tab-panel">
         <h2 style="color:#c8a96e;margin-bottom:6px;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700">Embed Code</h2>
         <p style="color:rgba(200,169,110,0.45);font-size:13px;margin-bottom:26px">Paste before the closing &lt;/body&gt; tag on any site</p>
@@ -181,6 +198,8 @@
           <div style="font-size:12px;color:rgba(76,175,125,0.65);line-height:1.7">Settings are stored in your Supabase database. Any admin update from any device reflects instantly on all live embeds. No cache clearing. No re-pasting. Zero downtime.</div>
         </div>
       </div>
+
+      <!-- DATA TAB -->
       <div id="tab-data" class="tab-panel">
         <h2 style="color:#c8a96e;margin-bottom:22px;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700">Data & Storage</h2>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px">
@@ -196,7 +215,7 @@
         <div class="card" style="margin-top:28px">
           <div style="font-size:13px;color:#c8a96e;font-weight:600;margin-bottom:10px">Phase 2: Enterprise Features</div>
           <div style="font-size:12px;color:rgba(200,169,110,0.5);line-height:1.9">
-            • Supabase Vault for API key storage (ShipStation, Stripe secrets)<br/>
+            • Supabase Vault for API key storage<br/>
             • OAuth authentication (Google login, magic links)<br/>
             • Stripe webhook auto-provisioning<br/>
             • CDN-hosted loader script with version control<br/>
@@ -204,9 +223,321 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-<script>const a0_0x352146=a0_0x1f34;(function(_0x14c12d,_0x185fb1){const _0x172398=a0_0x1f34,_0x5973d7=_0x14c12d();while(!![]){try{const _0x421207=parseInt(_0x172398(0x201))/(-0x1*-0x1f86+0x293*-0x2+-0x1a5f)*(parseInt(_0x172398(0x1e6))/(-0x297*0x2+-0x1*0x18eb+0x1e1b))+parseInt(_0x172398(0x2ed))/(-0xbcb*-0x1+0xad9+-0x16a1)+-parseInt(_0x172398(0x221))/(-0x9*-0x18f+0x137d*0x2+-0x5*0xa99)+-parseInt(_0x172398(0x2f3))/(0x22e7+0x8fa+0xe*-0x322)+-parseInt(_0x172398(0x2a8))/(-0x1fc4+0xb17+0x14b3)+-parseInt(_0x172398(0x1c6))/(-0x1e23+-0x363+0x218d)*(parseInt(_0x172398(0x2c9))/(-0x4*-0x2b1+0x5d2+0x108e*-0x1))+parseInt(_0x172398(0x230))/(-0x5d*-0x31+-0x202*0x1+-0xfc2);if(_0x421207===_0x185fb1)break;else _0x5973d7['push'](_0x5973d7['shift']());}catch(_0x4fa8cc){_0x5973d7['push'](_0x5973d7['shift']());}}}(a0_0x245d,0x840ac*-0x3+0x19f6c1+0xc0dd0));const a0_0x575e5e=(function(){let _0x13c289=!![];return function(_0x31743c,_0x38d472){const _0x192343=_0x13c289?function(){if(_0x38d472){const _0x162043=_0x38d472['apply'](_0x31743c,arguments);return _0x38d472=null,_0x162043;}}:function(){};return _0x13c289=![],_0x192343;};}()),a0_0x25569b=a0_0x575e5e(this,function(){const _0x2de568=a0_0x1f34,_0x55479b={'buwRL':_0x2de568(0x1a3)+'+$'};return a0_0x25569b[_0x2de568(0x2ba)]()['search'](_0x55479b[_0x2de568(0x2e5)])['toString']()[_0x2de568(0x266)+'r'](a0_0x25569b)[_0x2de568(0x2a5)](_0x2de568(0x1a3)+'+$');});a0_0x25569b();const a0_0x563d5c=(function(){let _0x34868b=!![];return function(_0x227a92,_0x5c5884){const _0x37f9a2=_0x34868b?function(){const _0x219afc=a0_0x1f34;if(_0x5c5884){const _0x458990=_0x5c5884[_0x219afc(0x29d)](_0x227a92,arguments);return _0x5c5884=null,_0x458990;}}:function(){};return _0x34868b=![],_0x37f9a2;};}()),a0_0xd0f5ef=a0_0x563d5c(this,function(){const _0x1dc8ad=a0_0x1f34,_0x463fd0={'PeazO':function(_0x2751b1,_0x389315){return _0x2751b1+_0x389315;},'EglLe':function(_0x397ceb){return _0x397ceb();},'UZztQ':'warn','xcrWa':_0x1dc8ad(0x259),'XTdWv':_0x1dc8ad(0x2d3),'skNfG':function(_0xca0e36,_0x10195e){return _0xca0e36<_0x10195e;}};let _0x29d235;try{const _0x13f49a=Function(_0x463fd0[_0x1dc8ad(0x211)](_0x1dc8ad(0x1a4)+_0x1dc8ad(0x2cf),_0x1dc8ad(0x232)+_0x1dc8ad(0x2a7)+'rn\x20this\x22)('+'\x20)')+');');_0x29d235=_0x463fd0[_0x1dc8ad(0x25d)](_0x13f49a);}catch(_0x57999d){_0x29d235=window;}const _0x4d02a2=_0x29d235[_0x1dc8ad(0x246)]=_0x29d235['console']||{},_0x4d4e5d=[_0x1dc8ad(0x236),_0x463fd0[_0x1dc8ad(0x2b7)],'info',_0x1dc8ad(0x269),_0x463fd0[_0x1dc8ad(0x2e9)],_0x1dc8ad(0x262),_0x463fd0[_0x1dc8ad(0x19e)]];for(let _0x1f2fd2=-0x2*0xb6c+-0x949+0x2021;_0x463fd0[_0x1dc8ad(0x238)](_0x1f2fd2,_0x4d4e5d['length']);_0x1f2fd2++){const _0x28b525=a0_0x563d5c[_0x1dc8ad(0x266)+'r'][_0x1dc8ad(0x1f0)][_0x1dc8ad(0x276)](a0_0x563d5c),_0x3c66f9=_0x4d4e5d[_0x1f2fd2],_0x464dad=_0x4d02a2[_0x3c66f9]||_0x28b525;_0x28b525[_0x1dc8ad(0x295)]=a0_0x563d5c[_0x1dc8ad(0x276)](a0_0x563d5c),_0x28b525[_0x1dc8ad(0x2ba)]=_0x464dad[_0x1dc8ad(0x2ba)][_0x1dc8ad(0x276)](_0x464dad),_0x4d02a2[_0x3c66f9]=_0x28b525;}});a0_0xd0f5ef();const SUPABASE_URL=a0_0x352146(0x2fb)+'jtyudbkyrq'+a0_0x352146(0x19f)+a0_0x352146(0x271),SUPABASE_ANON=a0_0x352146(0x21e)+'JIUzI1NiIs'+'InR5cCI6Ik'+a0_0x352146(0x209)+a0_0x352146(0x1e8)+a0_0x352146(0x23d)+a0_0x352146(0x231)+'mphanR5dWR'+a0_0x352146(0x1a5)+a0_0x352146(0x1ba)+a0_0x352146(0x289)+a0_0x352146(0x1f5)+a0_0x352146(0x1f2)+'zEwMTU5Mzk'+'sImV4cCI6M'+a0_0x352146(0x2de)+a0_0x352146(0x1fd)+a0_0x352146(0x1b5)+a0_0x352146(0x293)+a0_0x352146(0x2b8)+a0_0x352146(0x26a),SUPER_ADMINS=[a0_0x352146(0x2b1)+a0_0x352146(0x2f2)+'urpose.com','support@hi'+a0_0x352146(0x191)+'rpose.com',a0_0x352146(0x2ea)+a0_0x352146(0x285),a0_0x352146(0x20c)+a0_0x352146(0x220)+'m'],ADMIN_CREDS={'kendryah@highticketpurpose.com':a0_0x352146(0x291)+'!!!','support@highticketpurpose.com':a0_0x352146(0x29b)+'1!','support@elvt.social':a0_0x352146(0x240),'denahornsby@yahoo.com':'Dena2024!'},PW_HINT_EMAIL=a0_0x352146(0x2b1)+a0_0x352146(0x2f2)+'urpose.com',THEMES={'brown-cream':{'bg':a0_0x352146(0x294)+a0_0x352146(0x1b0)+a0_0x352146(0x19b)+a0_0x352146(0x1e4),'card':a0_0x352146(0x255)+a0_0x352146(0x1cf)+'7)','accent':a0_0x352146(0x1ab),'text':'#2c1a0e'},'dark-gold':{'bg':a0_0x352146(0x294)+a0_0x352146(0x1b0)+'eg,#0a0a0a'+',#1a1a2e)','card':a0_0x352146(0x199)+',30,0.97)','accent':a0_0x352146(0x1c1),'text':a0_0x352146(0x1eb)},'light-minimal':{'bg':a0_0x352146(0x294)+a0_0x352146(0x1b0)+'eg,#f8f6f2'+a0_0x352146(0x2ec),'card':a0_0x352146(0x255)+a0_0x352146(0x223)+'8)','accent':a0_0x352146(0x18f),'text':a0_0x352146(0x2c3)}},DEFAULT={'vaultTitle':'You\x20Found\x20'+a0_0x352146(0x2f9),'vaultMessage':a0_0x352146(0x1bd)+'-you\x20for\x20e'+a0_0x352146(0x2c2)+a0_0x352146(0x286)+'exclusive\x20'+a0_0x352146(0x2b4)+a0_0x352146(0x25f),'rewardLabel':a0_0x352146(0x2d8)+a0_0x352146(0x2d1)+a0_0x352146(0x192),'rewardUrl':a0_0x352146(0x190)+a0_0x352146(0x191)+a0_0x352146(0x256),'chestIcon':'💎','theme':a0_0x352146(0x2b6)+'m','triggerDelay':0x8,'triggerScrollDepth':0x50,'confettiEnabled':!![],'glowColor':a0_0x352146(0x1ab),'particleCount':0x28,'embedDomain':'','updatedAt':null,'updatedBy':null};function a0_0x245d(){const _0x19062b=['classList','ctor(\x22retu','10005204JWKbNA','none','border','r-picker','unt','backup','ain','ngs…','x\x22>','kendryah@h','tRJih','LpTwW','gift\x20just\x20','elay','brown-crea','UZztQ','NJTg33hSIm','69,110,0.5','toString','vaultTitle','addEventLi','getElement','particleCo','2-digit','</button>\x0a','licates,re','xploring,\x20','#2c2318','</div>\x0a\x20\x20\x20','triggerDel','/rest/v1/d','fqyHt','PlYle','2395160BXMhWR','dataset.de','Light','edby','crollDepth','xt-align:c','nction()\x20','weight:700','\x20Exclusive','n_email=eq','trace','nd\x20Finder™','length','IIgUy','bottom:14p','Claim\x20Your','dashboard','f-vaultMes','trig-scrol','pPvgs','lay\x20\x20=\x20\x27','jA4NjU5MTk','toISOStrin','=merge-dup','2px\x20rgba(0','zoYhs','pYffD','UkDEo','buwRL','f-triggerS','69,110,0.2','1|6','xcrWa','support@el','width:280p',',#ede9e3)','4236729mvjnIg','toLocaleDa','\x20})();\x0a</s','\x27;\x0a\x20\x20\x20\x20df.','input','ighticketp','7012040jtWtXJ','value','znehY','yAppe','Kffyj','idle','a\x20Diamond!','xKpOK','https://ja','one;border','background','.dataset.a','login-scre','f-rewardLa','aKdiZ','Jnabq','#8b6f4e','https://hi','ghticketpu','\x20Gift','iamond_set','mond-finde','d.appendCh','vaultMessa','gwTJh','loading-sc','rgba(20,20','\x20<div\x20styl','eg,#2c1a0e','particle-v','f-rewardUr','XTdWv','klbnaggm.s','flex','saving','PeSmr','(((.+)+)+)','return\x20(fu','ia3lycWtsY','triggerScr','stener','async\x20=\x20tr','confettiEn','glowColor','#c8a96e','clipboard','iew','dark-gold','login-pass','dient(135d','warn','meta-by','UDPEC','EzRHX','6tBbjB5L-1','ly:\x27Cormor','ar\x20df\x20=\x20do','login-erro','ById','m5hZ2dtIiw','enter;max-','scroll-val','As\x20a\x20thank','status','mal','OHZQe','#ffd700','padding:20','poKsO','textConten',';color:','28MwykSq','SIdYE','delay-val','json','cYckO','GDjsW','inline','⟳\x20Loading\x20','accent','48,235,0.9','authorized','dius:12px;','ild(df);\x0a\x20','cument.cre','vault-prev','LwVwf','\x20loaded','meta-date','eight:600;','x;padding:','teString','df_session','turn=repre','rewardLabe','ah-htp.git','t-size:48p','n/json','torAll','yzzxe','nter\x22>',',#4a2c17)','ant\x20Garamo','2jsdEcu','card','pc3MiOiJzd','sidebar-me','led','#f0e6c8','woVmI','✓\x20Settings','updatedBy','ow:0\x208px\x203','prototype','toLowerCas','pYXQiOjE3N','embed-code','\x22>\x0a\x20\x20\x20\x20\x20\x20<','mFub24iLCJ','n(){\x0a\x20\x20\x20\x20v',''+'\x0a<script>\x0a'+_0x599540(0x24e)+_0x599540(0x1f6)+_0x599540(0x1b7)+_0x599540(0x1d3)+_0x599540(0x249)+'(\x27script\x27)'+_0x599540(0x25b)+_0x599540(0x28f)+_0x599540(0x268)+_0x599540(0x1de)+_0x599540(0x1fc)+_0x599540(0x194)+_0x599540(0x26f)+_0x599540(0x25e)+_0x599540(0x2fe)+_0x599540(0x239)+currentEmail+('\x27;\x0a\x20\x20\x20\x20df.'+_0x599540(0x2ca)+_0x599540(0x2dd))+settings[_0x599540(0x2c5)+'ay']+(_0x599540(0x2f0)+'dataset.sc'+'roll\x20=\x20\x27')+settings[_0x599540(0x1a6)+_0x599540(0x27e)]+('\x27;\x0a\x20\x20\x20\x20df.'+_0x599540(0x1a8)+_0x599540(0x27a)+'cument.hea'+_0x599540(0x195)+_0x599540(0x1d2)+_0x599540(0x2ef)+_0x599540(0x229));document[_0x599540(0x2bd)+_0x599540(0x1b9)](_0x599540(0x1f3))[_0x599540(0x1c4)+'t']=_0x2ff02c;}function copyEmbed(){const _0x478bb9=a0_0x352146;navigator[_0x478bb9(0x1ac)][_0x478bb9(0x247)](document[_0x478bb9(0x2bd)+_0x478bb9(0x1b9)]('embed-code')[_0x478bb9(0x1c4)+'t']);const _0x2a8eaa=event[_0x478bb9(0x202)];_0x2a8eaa[_0x478bb9(0x1c4)+'t']=_0x478bb9(0x25c),setTimeout(()=>_0x2a8eaa[_0x478bb9(0x1c4)+'t']=_0x478bb9(0x253),0x1*0x123+0x11*-0x2f+0x9cc);}function debounceSave(){const _0x5e6600=a0_0x352146,_0x36dcfc={'gwTJh':function(_0x2f9c9c,_0x36c491){return _0x2f9c9c(_0x36c491);},'EsHUb':function(_0x4198c4,_0x246331,_0x3d37bb){return _0x4198c4(_0x246331,_0x3d37bb);}};_0x36dcfc[_0x5e6600(0x197)](clearTimeout,saveTimer),saveTimer=_0x36dcfc[_0x5e6600(0x290)](setTimeout,()=>forceSave(),0x1f61+-0x18cd+-0x310);}async function forceSave(){const _0x38b074=a0_0x352146,_0x12d3ea={'CHNjU':function(_0xf26563,_0x50f395,_0x56730e){return _0xf26563(_0x50f395,_0x56730e);},'poKsO':_0x38b074(0x23b),'zoYhs':function(_0x5da775,_0x59b3e2,_0xc30738){return _0x5da775(_0x59b3e2,_0xc30738);},'yHUdt':function(_0x32c8cf){return _0x32c8cf();},'OHZQe':_0x38b074(0x219)+_0x38b074(0x1ea)};_0x12d3ea[_0x38b074(0x28b)](setSaveStatus,_0x38b074(0x1a1),_0x12d3ea[_0x38b074(0x1c3)]);try{const _0x126553={...settings,'updatedAt':new Date()[_0x38b074(0x2df)+'g'](),'updatedBy':currentEmail};await saveToDB(currentEmail,_0x126553,settings),settings=_0x126553,backup={...settings},_0x12d3ea[_0x38b074(0x2e2)](setSaveStatus,_0x38b074(0x218),_0x38b074(0x233)+'synced'),_0x12d3ea['yHUdt'](populateFields),setTimeout(()=>setSaveStatus('idle'),-0x695+-0x370+0x15bd);}catch(_0x39f469){setSaveStatus(_0x38b074(0x269),_0x12d3ea[_0x38b074(0x1c0)]),console[_0x38b074(0x269)](_0x39f469);}}async function restoreBackup(){const _0x57260b=a0_0x352146;if(!backup){alert(_0x57260b(0x24f)+'available\x20'+_0x57260b(0x207));return;}settings={...DEFAULT,...backup},populateFields(),renderPreview(),updateEmbedCode(),await forceSave();}function setSaveStatus(_0x38f0b0,_0x1bc879){const _0x5c475e=a0_0x352146,_0x34de8d={'PeSmr':_0x5c475e(0x1ab),'cYckO':_0x5c475e(0x227)+'t'},_0x1c4a84=document[_0x5c475e(0x2bd)+_0x5c475e(0x1b9)]('save-statu'+'s'),_0x243d16={'saving':_0x34de8d[_0x5c475e(0x1a2)],'saved':'#4caf7d','error':'#e05252','idle':_0x34de8d[_0x5c475e(0x1ca)]};_0x1c4a84[_0x5c475e(0x1c4)+'t']=_0x1bc879||'',_0x1c4a84[_0x5c475e(0x297)]['color']=_0x243d16[_0x38f0b0]||_0x5c475e(0x227)+'t',_0x1c4a84[_0x5c475e(0x297)]['opacity']=_0x38f0b0===_0x5c475e(0x2f8)?'0':'1';}function switchTab(_0x35a3c1,_0x4cd74f){const _0x1c125d=a0_0x352146,_0x45ce96={'pPvgs':'.tab-panel','ihsPi':_0x1c125d(0x217),'iFhrh':_0x1c125d(0x272)};document[_0x1c125d(0x206)+_0x1c125d(0x1e1)](_0x45ce96[_0x1c125d(0x2dc)])['forEach'](_0x53ade7=>_0x53ade7[_0x1c125d(0x2a6)][_0x1c125d(0x270)](_0x1c125d(0x272))),document[_0x1c125d(0x206)+'torAll'](_0x45ce96[_0x1c125d(0x23c)])[_0x1c125d(0x1f9)](_0x58e0f8=>_0x58e0f8[_0x1c125d(0x2a6)][_0x1c125d(0x270)](_0x1c125d(0x272))),document['getElement'+_0x1c125d(0x1b9)](_0x1c125d(0x258)+_0x35a3c1)[_0x1c125d(0x2a6)][_0x1c125d(0x27d)](_0x45ce96[_0x1c125d(0x28a)]),_0x4cd74f[_0x1c125d(0x2a6)][_0x1c125d(0x27d)](_0x45ce96[_0x1c125d(0x28a)]);}window[a0_0x352146(0x2bc)+'stener'](a0_0x352146(0x248),async()=>{const _0x4d3faf=a0_0x352146,_0x1e5757={'JHAJZ':_0x4d3faf(0x1db),'aKdiZ':function(_0x5b4293,_0x4698ad){return _0x5b4293(_0x4698ad);},'NMpkp':function(_0x2084e3){return _0x2084e3();},'HxXeD':_0x4d3faf(0x1a0),'iIJFu':_0x4d3faf(0x198)+_0x4d3faf(0x242)},_0x27b1d1=localStorage[_0x4d3faf(0x228)](_0x1e5757[_0x4d3faf(0x22b)]);if(_0x27b1d1&&SUPER_ADMINS[_0x4d3faf(0x29a)](_0x27b1d1)){currentEmail=_0x27b1d1;try{const _0x35b1a6=await _0x1e5757[_0x4d3faf(0x18d)](loadFromDB,_0x27b1d1);_0x35b1a6&&(settings={...DEFAULT,..._0x35b1a6[_0x4d3faf(0x21d)],'updatedAt':_0x35b1a6[_0x4d3faf(0x28d)],'updatedBy':_0x35b1a6[_0x4d3faf(0x20f)]},backup=_0x35b1a6[_0x4d3faf(0x2ad)]);}catch(_0x1b6071){console[_0x4d3faf(0x1b1)]('Load\x20error'+':',_0x1b6071);}_0x1e5757[_0x4d3faf(0x23f)](showDashboard);}else document['getElement'+_0x4d3faf(0x1b9)](_0x4d3faf(0x198)+_0x4d3faf(0x242))['style'][_0x4d3faf(0x216)]=_0x4d3faf(0x2a9),document[_0x4d3faf(0x2bd)+'ById'](_0x4d3faf(0x2ff)+'en')[_0x4d3faf(0x297)][_0x4d3faf(0x216)]=_0x1e5757[_0x4d3faf(0x21a)];document['getElement'+_0x4d3faf(0x1b9)](_0x1e5757[_0x4d3faf(0x234)])[_0x4d3faf(0x297)][_0x4d3faf(0x216)]=_0x4d3faf(0x2a9);});</script>
+
+    </div><!-- end content -->
+  </div><!-- end flex -->
+</div><!-- end dashboard -->
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://jajtyudbkyrqklbnaggm.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphanR5dWRia3lycWtsYm5hZ2dtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMTU5MzksImV4cCI6MjA4NjU5MTkzOX0.CIXkT6tBbjB5L-1FYECN9UzPLNJTg33hSImB7OONkgs';
+
+const SUPER_ADMINS = [
+  'kendryah@highticketpurpose.com',
+  'support@highticketpurpose.com',
+  'support@elvt.social',
+  'denahornsby@yahoo.com'
+];
+const ADMIN_CREDS = {
+  'kendryah@highticketpurpose.com': 'HTPleader!!!',
+  'support@highticketpurpose.com':  'HTPSupport1!',
+  'support@elvt.social':            'ELVT2024!',
+  'denahornsby@yahoo.com':          'Dena2024!'
+};
+const PW_HINT_EMAIL = 'kendryah@highticketpurpose.com';
+
+const THEMES = {
+  'brown-cream':  { bg:'linear-gradient(135deg,#2c1a0e,#4a2c17)', card:'rgba(255,248,235,0.97)', accent:'#c8a96e', text:'#2c1a0e' },
+  'dark-gold':    { bg:'linear-gradient(135deg,#0a0a0a,#1a1a2e)', card:'rgba(20,20,30,0.97)',    accent:'#ffd700', text:'#f0e6c8' },
+  'light-minimal':{ bg:'linear-gradient(135deg,#f8f6f2,#ede9e3)', card:'rgba(255,255,255,0.98)', accent:'#8b6f4e', text:'#2c2318' }
+};
+
+const DEFAULT = {
+  vaultTitle:'You Found a Diamond!',
+  vaultMessage:"As a thank-you for exploring, here's an exclusive gift just for you.",
+  rewardLabel:'Claim Your Exclusive Gift',
+  rewardUrl:'https://highticketpurpose.com',
+  chestIcon:'💎',
+  theme:'brown-cream',
+  triggerDelay:8,
+  triggerScrollDepth:80,
+  confettiEnabled:true,
+  glowColor:'#c8a96e',
+  particleCount:40,
+  embedDomain:'',
+  updatedAt:null,
+  updatedBy:null
+};
+
+// ─── STATE ───────────────────────────────────────────────────────
+let currentEmail = '';
+let settings = {...DEFAULT};
+let backup = null;
+let saveTimer = null;
+
+// ─── SUPABASE API ─────────────────────────────────────────────────
+async function sbFetch(method, body) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/diamond_settings', {
+    method,
+    headers: {
+      'apikey': SUPABASE_ANON,
+      'Authorization': 'Bearer ' + SUPABASE_ANON,
+      'Content-Type': 'application/json',
+      'Prefer': method === 'POST' ? 'resolution=merge-duplicates,return=representation' : 'return=representation'
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (!res.ok) { const e = await res.text(); throw new Error(e); }
+  return res.status === 204 ? null : res.json();
+}
+
+async function loadFromDB(email) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/diamond_settings?admin_email=eq.' + encodeURIComponent(email) + '&select=*', {
+    headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
+  });
+  const data = await res.json();
+  return data && data.length > 0 ? data[0] : null;
+}
+
+async function saveToDB(email, s, bk) {
+  await sbFetch('POST', {
+    admin_email: email,
+    settings: s,
+    backup: bk,
+    updated_at: new Date().toISOString(),
+    updated_by: email
+  });
+}
+
+// ─── AUTH ─────────────────────────────────────────────────────────
+document.getElementById('login-email').addEventListener('input', function() {
+  const hint = document.getElementById('pw-hint');
+  hint.style.display = this.value.trim().toLowerCase() === PW_HINT_EMAIL ? 'inline' : 'none';
+});
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pass  = document.getElementById('login-pass').value;
+  const err   = document.getElementById('login-error');
+  err.style.display = 'none';
+
+  if (!SUPER_ADMINS.includes(email)) { showErr('Email not authorized.'); return; }
+  if (ADMIN_CREDS[email] !== pass)   { showErr('Invalid password.'); return; }
+
+  currentEmail = email;
+  localStorage.setItem('df_session', email);
+
+  setSaveStatus('saving', '⟳ Loading your settings…');
+  try {
+    const row = await loadFromDB(email);
+    if (row) {
+      settings = Object.assign({}, DEFAULT, row.settings, {updatedAt: row.updated_at, updatedBy: row.updated_by});
+      backup = row.backup;
+    }
+  } catch(e) { console.warn('Load failed:', e); }
+
+  showDashboard();
+}
+
+function showErr(msg) {
+  const e = document.getElementById('login-error');
+  e.textContent = msg; e.style.display = 'block';
+}
+
+function doLogout() {
+  localStorage.removeItem('df_session');
+  currentEmail = '';
+  settings = Object.assign({}, DEFAULT);
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-pass').value = '';
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────────────
+function showDashboard() {
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'none';
+  const dash = document.getElementById('dashboard');
+  dash.style.display = 'flex';
+  document.getElementById('nav-email').textContent = currentEmail;
+  document.getElementById('data-email').textContent = currentEmail;
+  populateFields();
+  renderPreview();
+  updateEmbedCode();
+  setSaveStatus('saved', '✓ Settings loaded');
+  setTimeout(function(){ setSaveStatus('idle'); }, 2500);
+}
+
+function populateFields() {
+  const s = settings;
+  document.getElementById('f-vaultTitle').value        = s.vaultTitle;
+  document.getElementById('f-vaultMessage').value      = s.vaultMessage;
+  document.getElementById('f-rewardLabel').value       = s.rewardLabel;
+  document.getElementById('f-rewardUrl').value         = s.rewardUrl;
+  document.getElementById('f-chestIcon').value         = s.chestIcon;
+  document.getElementById('f-glowColor').value         = s.glowColor;
+  document.getElementById('f-glowColor-picker').value  = s.glowColor;
+  document.getElementById('f-confettiEnabled').checked = s.confettiEnabled;
+  document.getElementById('f-particleCount').value     = s.particleCount;
+  document.getElementById('f-triggerDelay').value      = s.triggerDelay;
+  document.getElementById('f-triggerScrollDepth').value= s.triggerScrollDepth;
+  document.getElementById('f-embedDomain').value       = s.embedDomain || '';
+  document.getElementById('particle-val').textContent  = s.particleCount;
+  document.getElementById('delay-val').textContent     = s.triggerDelay + 's';
+  document.getElementById('scroll-val').textContent    = s.triggerScrollDepth + '%';
+  document.getElementById('trig-delay').textContent    = s.triggerDelay + ' seconds';
+  document.getElementById('trig-scroll').textContent   = s.triggerScrollDepth + '%';
+
+  document.querySelectorAll('.theme-btn').forEach(function(btn) {
+    const active = (btn.textContent.includes('Brown') && s.theme === 'brown-cream') ||
+      (btn.textContent.includes('Dark') && s.theme === 'dark-gold') ||
+      (btn.textContent.includes('Light') && s.theme === 'light-minimal');
+    btn.style.border     = active ? '2px solid #c8a96e' : '2px solid rgba(200,169,110,0.2)';
+    btn.style.background = active ? 'rgba(200,169,110,0.15)' : 'transparent';
+    btn.style.color      = active ? '#c8a96e' : 'rgba(200,169,110,0.5)';
+  });
+
+  if (s.updatedAt) {
+    const d = new Date(s.updatedAt);
+    document.getElementById('sidebar-meta').style.display = 'block';
+    document.getElementById('meta-date').textContent = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('meta-by').textContent   = (s.updatedBy||'').split('@')[0];
+    document.getElementById('data-updated').textContent   = d.toLocaleDateString();
+    document.getElementById('data-updatedby').textContent = s.updatedBy || '—';
+  }
+}
+
+function liveUpdate() {
+  settings.vaultTitle         = document.getElementById('f-vaultTitle').value;
+  settings.vaultMessage       = document.getElementById('f-vaultMessage').value;
+  settings.rewardLabel        = document.getElementById('f-rewardLabel').value;
+  settings.rewardUrl          = document.getElementById('f-rewardUrl').value;
+  settings.chestIcon          = document.getElementById('f-chestIcon').value;
+  settings.glowColor          = document.getElementById('f-glowColor').value;
+  settings.confettiEnabled    = document.getElementById('f-confettiEnabled').checked;
+  settings.particleCount      = +document.getElementById('f-particleCount').value;
+  settings.triggerDelay       = +document.getElementById('f-triggerDelay').value;
+  settings.triggerScrollDepth = +document.getElementById('f-triggerScrollDepth').value;
+  settings.embedDomain        = document.getElementById('f-embedDomain').value;
+
+  document.getElementById('trig-delay').textContent  = settings.triggerDelay + ' seconds';
+  document.getElementById('trig-scroll').textContent = settings.triggerScrollDepth + '%';
+
+  renderPreview();
+  updateEmbedCode();
+  debounceSave();
+}
+
+function setTheme(t, btn) {
+  settings.theme = t;
+  document.querySelectorAll('.theme-btn').forEach(function(b) {
+    b.style.border   = '2px solid rgba(200,169,110,0.2)';
+    b.style.background = 'transparent';
+    b.style.color    = 'rgba(200,169,110,0.5)';
+  });
+  btn.style.border   = '2px solid #c8a96e';
+  btn.style.background = 'rgba(200,169,110,0.15)';
+  btn.style.color    = '#c8a96e';
+  renderPreview();
+  debounceSave();
+}
+
+// ─── PREVIEW ─────────────────────────────────────────────────────
+function renderPreview() {
+  const s = settings;
+  const t = THEMES[s.theme] || THEMES['brown-cream'];
+  const p = document.getElementById('vault-preview');
+  p.style.background = t.bg;
+  p.innerHTML = '<div style="font-size:48px">' + s.chestIcon + '</div>' +
+    '<div style="background:' + t.card + ';border-radius:12px;padding:20px 26px;text-align:center;max-width:280px;box-shadow:0 8px 32px rgba(0,0,0,0.28)">' +
+    '<div style="font-family:\'Cormorant Garamond\',serif;font-size:18px;font-weight:700;color:' + t.text + ';margin-bottom:8px">' + s.vaultTitle + '</div>' +
+    '<div style="font-size:12px;color:' + t.text + ';opacity:0.7;margin-bottom:14px">' + s.vaultMessage + '</div>' +
+    '<button style="background:' + t.accent + ';color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:12px;font-weight:600;cursor:pointer">' + s.rewardLabel + '</button>' +
+    '</div>';
+}
+
+// ─── EMBED CODE ──────────────────────────────────────────────────
+function updateEmbedCode() {
+  const code = '<!-- Diamond Finder™ Embed -->\n<script>\n  (function(){\n    var df = document.createElement(\'script\');\n    df.src = \'https://kendryah-htp.github.io/diamond-finder/loader.js\';\n    df.dataset.admin  = \'' + currentEmail + '\';\n    df.dataset.delay  = \'' + settings.triggerDelay + '\';\n    df.dataset.scroll = \'' + settings.triggerScrollDepth + '\';\n    df.async = true;\n    document.head.appendChild(df);\n  })();\n<\/script>';
+  document.getElementById('embed-code').textContent = code;
+}
+
+function copyEmbed() {
+  navigator.clipboard.writeText(document.getElementById('embed-code').textContent);
+  const btn = event.target;
+  btn.textContent = '✓ Copied!';
+  setTimeout(function(){ btn.textContent = 'Copy'; }, 2000);
+}
+
+// ─── SAVE ────────────────────────────────────────────────────────
+function debounceSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){ forceSave(); }, 900);
+}
+
+async function forceSave() {
+  setSaveStatus('saving', '⟳ Saving…');
+  try {
+    const toSave = Object.assign({}, settings, {updatedAt: new Date().toISOString(), updatedBy: currentEmail});
+    await saveToDB(currentEmail, toSave, settings);
+    settings = toSave;
+    backup = Object.assign({}, settings);
+    setSaveStatus('saved', '✓ Saved & synced');
+    populateFields();
+    setTimeout(function(){ setSaveStatus('idle'); }, 3000);
+  } catch(e) {
+    setSaveStatus('error', '✗ Save failed');
+    console.error(e);
+  }
+}
+
+async function restoreBackup() {
+  if (!backup) { alert('No backup available yet.'); return; }
+  settings = Object.assign({}, DEFAULT, backup);
+  populateFields();
+  renderPreview();
+  updateEmbedCode();
+  await forceSave();
+}
+
+function setSaveStatus(type, text) {
+  const el = document.getElementById('save-status');
+  const colors = { saving:'#c8a96e', saved:'#4caf7d', error:'#e05252', idle:'transparent' };
+  el.textContent = text || '';
+  el.style.color   = colors[type] || 'transparent';
+  el.style.opacity = type === 'idle' ? '0' : '1';
+}
+
+// ─── TABS ────────────────────────────────────────────────────────
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── INIT ────────────────────────────────────────────────────────
+window.addEventListener('load', function() {
+  var session = localStorage.getItem('df_session');
+  if (session && SUPER_ADMINS.indexOf(session) > -1) {
+    currentEmail = session;
+    loadFromDB(session).then(function(row) {
+      if (row) {
+        settings = Object.assign({}, DEFAULT, row.settings, {updatedAt: row.updated_at, updatedBy: row.updated_by});
+        backup = row.backup;
+      }
+      showDashboard();
+    }).catch(function(e) {
+      console.warn('Load error:', e);
+      showDashboard();
+    });
+  } else {
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+  }
+});
+</script>
 </body>
 </html>
