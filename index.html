@@ -282,7 +282,7 @@ footer a:hover{color:var(--gold)}
   <div class="nav-links">
     <a href="#how">How It Works</a>
     <a href="#pricing">Pricing</a>
-    <a href="https://kendryah-htp.github.io/diamond-finder/diamond-finder.html">Admin Login</a>
+    <a href="https://kendryah-htp.github.io/diamond-finder/diamond-finder.html" target="_blank">Admin Login</a>
   </div>
   <a class="nav-cta" href="#demo">Try It Free →</a>
 </nav>
@@ -485,7 +485,7 @@ footer a:hover{color:var(--gold)}
           <li>Admin panel access</li>
           <li>Email support</li>
         </ul>
-        <a class="plan-btn plan-btn-ghost" href="https://buy.stripe.com/5kQaEPeys9GLbGJ9Dg7ok12" target="_blank">Get Started →</a>
+        <a class="plan-btn plan-btn-ghost" href="javascript:void(0)" onclick="openIframe('https://buy.stripe.com/5kQaEPeys9GLbGJ9Dg7ok12','Diamond Finder™ Starter')">Get Started →</a>
       </div>
       <div class="plan featured" style="animation-delay:.2s">
         <div class="plan-badge">Most Popular</div>
@@ -501,7 +501,7 @@ footer a:hover{color:var(--gold)}
           <li>Backup & restore</li>
           <li>Priority support</li>
         </ul>
-        <a class="plan-btn plan-btn-gold" href="https://buy.stripe.com/4gMcMXgGA8CHeSVbLo7ok13" target="_blank">Get Pro →</a>
+        <a class="plan-btn plan-btn-gold" href="javascript:void(0)" onclick="openIframe('https://buy.stripe.com/4gMcMXgGA8CHeSVbLo7ok13','Diamond Finder™ Pro')">Get Pro →</a>
       </div>
       <div class="plan" style="animation-delay:.3s">
         <div class="plan-name">Agency</div>
@@ -516,7 +516,7 @@ footer a:hover{color:var(--gold)}
           <li>Team member access</li>
           <li>Dedicated support</li>
         </ul>
-        <a class="plan-btn plan-btn-ghost" href="https://buy.stripe.com/3cIdR1gGA9GLeSVeXA7ok14" target="_blank">Get Agency →</a>
+        <a class="plan-btn plan-btn-ghost" href="javascript:void(0)" onclick="openIframe('https://buy.stripe.com/3cIdR1gGA9GLeSVeXA7ok14','Diamond Finder™ Agency')">Get Agency →</a>
       </div>
     </div>
   </div>
@@ -553,20 +553,63 @@ footer a:hover{color:var(--gold)}
   <p style="font-size:16px;color:var(--cream-dim);margin-bottom:40px;position:relative;z-index:1;font-weight:300">Join creators rewarding their most curious visitors.</p>
   <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1">
     <a class="btn-primary" href="#demo">Build My Vault Free →</a>
-    <a class="btn-secondary" href="https://kendryah-htp.github.io/diamond-finder/diamond-finder.html">Admin Login</a>
+    <a class="btn-secondary" href="https://kendryah-htp.github.io/diamond-finder/diamond-finder.html" target="_blank">Admin Login</a>
   </div>
 </section>
 
 <!-- FOOTER -->
+<!-- iFrame Modal -->
+<div id="iframe-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);animation:fadein .3s ease">
+  <div style="position:absolute;inset:0" onclick="closeIframe()"></div>
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:92%;max-width:1100px;height:85vh;background:#111;border-radius:16px;overflow:hidden;border:1px solid rgba(200,169,110,0.2);box-shadow:0 40px 120px rgba(0,0,0,0.8);display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:#0a0603;border-bottom:1px solid rgba(200,169,110,0.1);flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:14px">💎</span>
+        <span id="iframe-label" style="font-size:13px;color:rgba(200,169,110,0.7);font-family:'Jost',sans-serif"></span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <a id="iframe-newtab" href="#" target="_blank" style="font-size:12px;color:rgba(200,169,110,0.5);text-decoration:none;font-family:'Jost',sans-serif;border:1px solid rgba(200,169,110,0.2);padding:5px 12px;border-radius:6px;transition:all .2s" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='rgba(200,169,110,0.5)'">Open in New Tab ↗</a>
+        <button onclick="closeIframe()" style="background:none;border:none;color:rgba(200,169,110,0.5);font-size:22px;cursor:pointer;line-height:1;padding:0 4px;transition:color .2s" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='rgba(200,169,110,0.5)'">×</button>
+      </div>
+    </div>
+    <iframe id="iframe-frame" src="" style="flex:1;border:none;width:100%;background:#fff" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation"></iframe>
+  </div>
+</div>
+
 <footer>
-  <p>© 2026 Diamond Finder™ by <a href="https://elvt.social" target="_blank">ELVT Social</a> · <a href="https://highticketpurpose.com" target="_blank">High Ticket Purpose</a></p>
+  <p>© 2026 Diamond Finder™ by <a href="javascript:void(0)" onclick="openIframe('https://highticketpurpose.com','High Ticket Purpose')">ELVT Social</a> · <a href="javascript:void(0)" onclick="openIframe('https://highticketpurpose.com','High Ticket Purpose')">High Ticket Purpose</a></p>
   <div>
-    <a href="https://kendryah-htp.github.io/diamond-finder/diamond-finder.html">Admin</a>
-    <a href="mailto:support@elvt.social">Support</a>
+    <a href="https://kendryah-htp.github.io/diamond-finder/diamond-finder.html" target="_blank">Admin</a>
+    <a href="mailto:re@elvt.social">Support</a>
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
+// ── iFRAME MODAL ─────────────────────────────────────────
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape'){ closeVault(); closeIframe(); }
+});
+function openIframe(url, label) {
+  if(url.indexOf('mailto:')===0){ window.location.href=url; return; }
+  document.getElementById('iframe-frame').src = url;
+  document.getElementById('iframe-label').textContent = label || url;
+  document.getElementById('iframe-newtab').href = url;
+  document.getElementById('iframe-modal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+function closeIframe() {
+  var modal = document.getElementById('iframe-modal');
+  modal.style.opacity = '0';
+  modal.style.transition = 'opacity .2s';
+  setTimeout(function(){
+    modal.style.display='none';
+    modal.style.opacity='';
+    modal.style.transition='';
+    document.getElementById('iframe-frame').src='';
+  }, 220);
+  document.body.style.overflow = '';
+}
+</script><script>
 // ── CONFIG ────────────────────────────────────────────────
 const SUPABASE_URL  = 'https://jajtyudbkyrqklbnaggm.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphanR5dWRia3lycWtsYm5hZ2dtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMTU5MzksImV4cCI6MjA4NjU5MTkzOX0.CIXkT6tBbjB5L-1FYECN9UzPLNJTg33hSImB7OONkgs';
@@ -844,13 +887,4 @@ function showVaultSuccess(code, email) {
     linksEl.appendChild(a);
   });
 
-  var t = THEMES[currentTheme];
-  document.getElementById('success-title').style.color = t.text;
-  document.getElementById('vault-success').style.color = t.text;
-}
-
-// Escape key closes vault
-document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeVault(); });
-</script>
-</body>
-</html>
+  var t = TH
