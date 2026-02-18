@@ -257,7 +257,7 @@
         <div class="card" style="margin-bottom:22px">
           <div style="font-size:13px;font-weight:700;color:#c8a96e;margin-bottom:16px">📋 Bulk Invite (CSV)</div>
           <p style="font-size:12px;color:rgba(200,169,110,0.45);margin-bottom:14px">One email per line, or <code style="background:rgba(200,169,110,0.1);padding:1px 6px;border-radius:4px">Name,Email</code> per line</p>
-          <textarea class="input" id="bulk-emails" rows="5" placeholder="Sarah,sarah@example.com&#10;John,john@example.com&#10;orjust@email.com" style="resize:vertical;font-family:monospace;font-size:13px"></textarea>
+          <textarea class="input" id="bulk-emails" rows="5" placeholder="Sarah,partner2@example.com&#10;John,partner@example.com&#10;orjust@email.com" style="resize:vertical;font-family:monospace;font-size:13px"></textarea>
           <div style="display:flex;align-items:center;gap:12px;margin-top:14px">
             <button class="btn-gold" onclick="sendBulkInvites()" id="bulk-btn" style="width:auto;padding:11px 28px">Send All →</button>
             <span id="bulk-status" style="font-size:13px;color:rgba(200,169,110,0.5)"></span>
@@ -285,19 +285,7 @@
 const SUPABASE_URL = 'https://jajtyudbkyrqklbnaggm.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphanR5dWRia3lycWtsYm5hZ2dtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMTU5MzksImV4cCI6MjA4NjU5MTkzOX0.CIXkT6tBbjB5L-1FYECN9UzPLNJTg33hSImB7OONkgs';
 
-const SUPER_ADMINS = [
-  'kendryah@highticketpurpose.com',
-  'support@highticketpurpose.com',
-  'support@elvt.social',
-  'denahornsby@yahoo.com'
-];
-const ADMIN_CREDS = {
-  'kendryah@highticketpurpose.com': 'HTPleader!!!',
-  'support@highticketpurpose.com':  'HTPSupport1!',
-  'support@elvt.social':            'ELVT2024!',
-  'denahornsby@yahoo.com':          'Dena2024!'
-};
-const PW_HINT_EMAIL = 'kendryah@highticketpurpose.com';
+// Auth handled via Supabase DB lookup
 
 const THEMES = {
   'brown-cream':  { bg:'linear-gradient(135deg,#2c1a0e,#4a2c17)', card:'rgba(255,248,235,0.97)', accent:'#c8a96e', text:'#2c1a0e' },
@@ -309,7 +297,7 @@ const DEFAULT = {
   vaultTitle:'You Found a Diamond!',
   vaultMessage:"As a thank-you for exploring, here's an exclusive gift just for you.",
   rewardLabel:'Claim Your Exclusive Gift',
-  rewardUrl:'https://highticketpurpose.com',
+  rewardUrl:'https://elvt.social',
   chestIcon:'💎',
   theme:'brown-cream',
   triggerDelay:8,
@@ -400,8 +388,24 @@ async function doLogin() {
   const err   = document.getElementById('login-error');
   err.style.display = 'none';
 
-  if (!SUPER_ADMINS.includes(email)) { showErr('Email not authorized.'); return; }
-  if (ADMIN_CREDS[email] !== pass)   { showErr('Invalid password.'); return; }
+  // Validate via Supabase - check if email has a record in diamond_settings
+  setSaveStatus('saving', '⟳ Verifying…');
+  try {
+    const chk = await fetch(SUPABASE_URL + '/rest/v1/diamond_settings?admin_email=eq.' + encodeURIComponent(email) + '&select=admin_email,admin_pass', {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
+    });
+    const rows = await chk.json();
+    if (!rows || rows.length === 0) { showErr('Email not authorized. Please sign up first.'); return; }
+    const stored_pass = rows[0].admin_pass;
+    if (stored_pass && stored_pass !== pass) { showErr('Invalid password.'); return; }
+    if (!stored_pass) {
+      await fetch(SUPABASE_URL + '/rest/v1/diamond_settings?admin_email=eq.' + encodeURIComponent(email), {
+        method: 'PATCH',
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ admin_pass: pass })
+      });
+    }
+  } catch(e) { showErr('Login error. Please try again.'); return; }
 
   currentEmail = email;
   localStorage.setItem('df_session', email);
@@ -685,7 +689,7 @@ async function sendDemoEmail(name, email, note) {
       </div>\
     </div>\
     <div style="padding:16px 36px;border-top:1px solid rgba(200,169,110,0.1);text-align:center">\
-      <div style="font-size:11px;color:rgba(200,169,110,0.3)">Diamond Finder™ by <a href="https://highticketpurpose.com" style="color:rgba(200,169,110,0.4);text-decoration:none">ELVT Social</a> · <a href="https://kendryah-htp.github.io/diamond-finder/#pricing" style="color:rgba(200,169,110,0.4);text-decoration:none">View Pricing</a></div>\
+      <div style="font-size:11px;color:rgba(200,169,110,0.3)">Diamond Finder™ by <a href="https://elvt.social" style="color:rgba(200,169,110,0.4);text-decoration:none">ELVT Social</a> · <a href="https://kendryah-htp.github.io/diamond-finder/#pricing" style="color:rgba(200,169,110,0.4);text-decoration:none">View Pricing</a></div>\
     </div>\
   </div>\
 </div></body></html>';
