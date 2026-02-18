@@ -664,15 +664,13 @@ async function sendDemoEmail(name, email, note) {
   </div>\
 </div></body></html>';
 
-  var res = await fetch('https://api.resend.com/emails', {
+  var res = await fetch(SB_URL + '/functions/v1/send-invite', {
     method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + RESEND_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from: 'Diamond Finder™ <' + FROM_EMAIL + '>',
-      to: [email],
-      subject: '💎 ' + firstName + ', your Diamond Finder™ demo is ready',
-      html: html
-    })
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + SB_ANON
+    },
+    body: JSON.stringify({ name: name, email: email, note: note })
   });
   if (!res.ok) { var e = await res.text(); throw new Error(e); }
   return res.json();
